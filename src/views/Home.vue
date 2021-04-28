@@ -1,10 +1,15 @@
 <template>
-  This is home page.
+  <NavigationBar />
 </template>
 
 <script>
+import NavigationBar from "@/components/NavigationBar.vue";
+
 export default {
-  name: "Home"
+  name: "Home",
+  components: {
+    NavigationBar
+  }
 }
 </script>
 
