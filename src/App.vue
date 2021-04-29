@@ -1,6 +1,8 @@
 <template>
-  <NavigationBar />
-  <router-view/>
+  <div class="bg-gray-900 text-gray-400">
+    <NavigationBar />
+    <router-view/>
+  </div>
 </template>
 
 <script>

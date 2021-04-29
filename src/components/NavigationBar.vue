@@ -1,6 +1,6 @@
 <template>
-  <nav class="shadow-md">
-    <p class="py-4 font-bold text-2xl text-center text-yellow-600">Crypto Will</p>
+  <nav class="border-b-2 border-gray-800">
+    <p class="py-4 font-bold text-2xl text-center text-gray-200">Crypto Will</p>
     <ul class="flex justify-center pb-4">
       <NavigationLink
         v-for="nav in navItems"
