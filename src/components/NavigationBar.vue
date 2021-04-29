@@ -7,7 +7,7 @@
         :key="nav.id"
         :text="nav.text"
         :url="nav.url"
-        :isActive="nav.isActive" />
+      />
     </ul>
   </nav>
 </template>
