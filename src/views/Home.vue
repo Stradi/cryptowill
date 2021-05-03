@@ -15,6 +15,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;To overcome this problem, <span class="text-yellow-500">CryptoWill</span> is created. CryptoWill will transfer your coins to your relative or friend after you die. So you will not lose your cryptocoins forever.
   </ImageTextCard>
   <br>
+  <Faq />
   <Footer />
 </div>
 </template>
@@ -23,13 +24,15 @@
 import Hero from "@/components/Hero.vue";
 import ImageTextCard from "@/components/ImageTextCard.vue";
 import Footer from "@/components/Footer.vue";
+import Faq from "@/components/Faq.vue";
 
 export default {
   name: "Home",
   components: {
     Hero,
     ImageTextCard,
-    Footer
+    Footer,
+    Faq
   }
 }
 </script>
