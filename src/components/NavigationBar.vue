@@ -25,8 +25,7 @@ export default {
       navItems: [
         { id: 0, text: "Home", url: "/" },
         { id: 1, text: "My Will", url: "/my-will" },
-        { id: 2, text: "FAQ", url: "/faq" },
-        { id: 3, text: "How to Use", url: "/how-to-use" }
+        { id: 2, text: "How to use", url: "/how-to-use"}
       ]
     }
   }

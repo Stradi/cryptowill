@@ -11,7 +11,7 @@
     </div>
     <div class="">
       <p
-        class="text-gray-200 text-2xl pb-3"
+        class="text-gray-200 text-2xl pb-3 font-medium"
         v-bind:class="[
           titleCentered !== undefined ? 'text-center' : ''
         ]"
