@@ -1,5 +1,5 @@
 <template>
-  <a href="#" @click="connect" class="font-medium text-yellow-500 transition duration-300 ease-out hover:text-yellow-600">{{ text }}</a>
+  <a @click="connect" href="#" class="font-medium text-yellow-500 transition duration-300 ease-out hover:text-yellow-600">{{ text }}</a>
 </template>
 
 <script>
@@ -8,8 +8,8 @@ export default {
   props: ["text"],
   methods: {
     connect() {
-      this.$store.dispatch("registerWeb3");
+      this.$store.dispatch("web3/connect");
     }
-  },
+  }
 }
 </script>

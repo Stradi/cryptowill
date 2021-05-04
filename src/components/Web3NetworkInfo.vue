@@ -1,25 +1,17 @@
 <template>
-  <div class="p-4 bg-gray-800 bg-opacity-50">
-    <div v-if="status">
-      <div v-if="isConnected" class="flex justify-between">
-        <p class="hidden md:block">Connected to <span class="font-medium">{{ networkName }}</span> with <a :href="explorerURI"><span class="font-medium text-yellow-500 transition duration-100 ease-out hover:text-yellow-600">{{ web3.selectedAccount }}</span></a></p>
-        <ConnectWeb3Button text="Reconnect" class="hidden md:block" />
-
-        <details class="md:hidden">
-          <summary>Network Information</summary>
-          <div>
-            <p>{{ networkName }}</p>
-            <a :href="explorerURI"><p class="font-medium text-yellow-500 transition duration-100 ease-out hover:text-yellow-600">{{ web3.selectedAccount }}</p></a>
-            <ConnectWeb3Button text="Reconnect" />
-          </div>
-        </details>
-      </div>
-      <div v-else class="flex justify-end">
-        <ConnectWeb3Button text="Connect" />
-      </div>
+  <div class="p-4 bg-gray-800 bg-opacity-50 hidden lg:block">
+    <div v-if="isConnected && this.$store.state.web3.account" class="flex justify-between">
+      <p>Connected to
+        <span class="text-yellow-500">{{ networkName }}</span> with 
+        <span class="text-yellow-500 hover:text-yellow-600 transition duration-200 ease-out"><a :href="explorerUri">{{ this.$store.state.web3.account }}</a></span>.
+      </p>
+      <ConnectWeb3Button text="Reconnect" />
     </div>
-    <div v-else>
-      Could not find any Web3 extension. Please install <a href="https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn" class="font-medium text-yellow-500">MetaMask</a>.
+    <div v-else class="flex justify-between">
+      <div>
+        {{ error }}
+      </div>
+      <ConnectWeb3Button text="Connect" />
     </div>
   </div>
 </template>
@@ -33,24 +25,18 @@ export default {
     ConnectWeb3Button
   },
   computed: {
-    web3() {
-      return this.$store.state.web3;
+    isConnected: function() {
+      return this.$store.state.web3.isConnected;
     },
-    status() {
-      return this.$store.state.web3.status;
+    networkName: function() {
+      return this.$store.getters["web3/networkName"];
     },
-    networkName() {
-      return this.$store.getters.networkName;
+    explorerUri: function() {
+      return this.$store.getters["web3/explorerUri"];
     },
-    explorerURI() {
-      return this.$store.getters.addressExplorerURI;
-    },
-    isConnected() {
-      return this.$store.getters.isConnectedToWeb3;
+    error: function() {
+      return this.$store.state.web3.error;
     }
-  },
-  beforeCreate() {
-    this.$store.dispatch("registerWeb3Status");
   }
 }
 </script>
