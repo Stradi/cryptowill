@@ -20,6 +20,9 @@ const store = new Vuex.Store({
       state.web3.networkId = payload.networkId;
       state.web3.selectedAccount = payload.selectedAccount;
       state.web3.balance = payload.balance;
+    },
+    registerWeb3Status(state, payload) {
+      state.web3.status = payload.status;
     }
   },
   actions: {
@@ -33,7 +36,19 @@ const store = new Vuex.Store({
         instance,
         networkId,
         selectedAccount,
-        balance
+        balance,
+      });
+    },
+    async registerWeb3Status({ commit }) {
+      let web3Status = true;
+      await web3Utils.getWeb3Instance().catch((error) => {
+        web3Status = false;
+      });
+
+      console.log(web3Status);
+
+      commit("registerWeb3Status", {
+        status: web3Status
       });
     }
   },
