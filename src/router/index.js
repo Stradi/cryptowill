@@ -1,17 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../views/Home.vue';
+import CreateWill from "../views/CreateWill.vue";
 
 const routes = [{
     path: '/',
     name: 'Home',
     component: Home
   }, {
-    path: '/my-will',
-    name: 'MyWill',
-    component: Home
+    path: '/create',
+    name: 'CreateWill',
+    component: CreateWill
   }, {
-    path: '/how-to-use',
-    name: 'HowToUse',
+    path: '/about',
+    name: 'About',
     component: Home
   }
 ];
