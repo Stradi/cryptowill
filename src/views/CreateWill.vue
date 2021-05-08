@@ -4,17 +4,17 @@
       {{ this.$store.state.contract.error }}
     </div>
 
-    <Payees />
+    <PayeeList />
   </div>
 </template>
 
 <script>
-import Payees from "@/components/CreateWill/Payees.vue";
+import PayeeList from "@/components/CreateWill/PayeeList.vue";
 
 export default {
   name: "CreateWill",
   components: {
-    Payees
+    PayeeList
   }
 }
 </script>
