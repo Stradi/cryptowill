@@ -26,14 +26,12 @@
         Create Now
     </router-link>
   </div>
-  <Footer />
 </div>
 </template>
 
 <script>
 import Hero from "@/components/Hero.vue";
 import ImageTextCard from "@/components/ImageTextCard.vue";
-import Footer from "@/components/Footer.vue";
 import Faq from "@/components/Faq.vue";
 
 export default {
@@ -41,7 +39,6 @@ export default {
   components: {
     Hero,
     ImageTextCard,
-    Footer,
     Faq
   },
   data: () => {
