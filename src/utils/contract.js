@@ -4,7 +4,7 @@ import web3 from "@/utils/web3.js";
 import { NETWORKS } from "@/utils/networks.js";
 
 const ERRORS = {
-  "WEB3_UNKNOWN_NETWORK_ID": "Provided network id is unknown.",
+  "WEB3_NOT_CONNECTED": "Not connected to Web3 provider.",
   "WEB3_UNDEFINED_CONTRACT": "Contract created is undefined."
 }
 
@@ -18,7 +18,7 @@ const getContract = (networkId) => {
     let network = NETWORKS[networkId];
     if(network === undefined) {
       console.log(networkId);
-      reject(ERRORS["WEB3_UNKNOWN_NETWORK_ID"]);
+      reject(ERRORS["WEB3_NOT_CONNECTED"]);
       return;
     }
 
@@ -34,4 +34,129 @@ const getContract = (networkId) => {
   });
 }
 
-export default { getContract };
+const getPayees = (contractInstance, address, approvedCoins) => {
+  return new Promise(async (resolve, reject) => {
+    let payeeCount = await getPayeeCount(contractInstance, address).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    let payees = [];
+    for(let i = 0; i < Number.parseInt(payeeCount); i++) {
+      let payee = await getPayeeWithIndex(contractInstance, address, i).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      let coins = []
+      for(let j = 0; j < approvedCoins.length; j++) {
+        let coinShare = await getPayeeShareForCoin(contractInstance, address, payee.self, approvedCoins[j]).catch((error) => {
+          reject(error);
+          return;
+        });
+
+        coins.push({
+          address: approvedCoins[j],
+          share: coinShare
+        });
+      }
+
+      payees.push({
+        address: payee.self,
+        isConfirmed: payee.isConfirmed,
+        isWithdrawed: payee.isWithdrawed,
+        message: payee.message,
+        shares: coins
+      });
+    }
+
+    resolve(payees);
+  });
+}
+
+const getApprovedCoins = (contractInstance, address) => {
+  return new Promise(async (resolve, reject) => {
+    let approvedCoinCount = await getApprovedCoinCount(contractInstance, address).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    let coins = [];
+    for(let i = 0; i < Number.parseInt(approvedCoinCount); i++) {
+      let coinAddress = await getCoinAddressWithIndex(contractInstance, address, i).catch((error) => {
+        reject(error);
+        return;
+      });
+      coins.push(coinAddress);
+    }
+
+    resolve(coins);
+  });
+}
+
+const getPayeeCount = (contractInstance, address) => {
+  return new Promise(async (resolve, reject) => {
+    let payeeCount = await contractInstance.methods.getPayeeCount().call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(payeeCount);
+  })
+}
+
+const getPayeeWithIndex = (contractInstance, address, payeeIndex) => {
+  return new Promise(async (resolve, reject) => {
+    let payee = contractInstance.methods.payerToPayee(address, payeeIndex).call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(payee);
+  });
+}
+
+const getApprovedCoinCount = (contractInstance, address) => {
+  return new Promise(async (resolve, reject) => {
+    let coinCount = contractInstance.methods.getApprovedCoinCount().call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(coinCount);
+  });
+}
+
+const getCoinAddressWithIndex = (contractInstance, address, coinIndex) => {
+  return new Promise(async (resolve, reject) => {
+    let coin = contractInstance.methods.payerToApprovedCoins(address, coinIndex).call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(coin);
+  })
+}
+
+const getPayeeShareForCoin = (contractInstance, address, payeeAddress, coinAddress) => {
+  return new Promise(async (resolve, reject) => {
+    let share = contractInstance.methods.getPayeeShareForCoin(payeeAddress, coinAddress).call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(share);
+  });
+}
+
+export default { getContract, getPayees, getApprovedCoins };
