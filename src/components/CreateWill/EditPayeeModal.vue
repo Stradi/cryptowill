@@ -26,6 +26,7 @@ export default {
       message: this.item.message,
       placeholder: this.item.message === '' ? 'Enter your message' : 'Type to update the message',
       //Deep copy
+      initialShares: JSON.parse(JSON.stringify(this.item.shares)),
       shares: JSON.parse(JSON.stringify(this.item.shares)),
       changedShares: []
     }
@@ -40,14 +41,16 @@ export default {
   },
   methods: {
     percentageChanged(idx) {
-      this.shares[idx].percentage = Math.max(0, Math.min(Number.parseInt(this.shares[idx].percentage), /* this.shares[idx].leftPercentage */ 100));
-      this.changedShares[idx] = this.shares[idx].percentage !== this.item.shares[idx].percentage;
+      this.shares[idx].percentage = Math.max(0, Math.min(Number.parseInt(this.shares[idx].percentage), this.shares[idx].percentageLeft));
+      this.changedShares[idx] = this.shares[idx].percentage !== this.initialShares[idx].percentage;
     }
   },
   beforeMount() {
     for(let i = 0; i < this.shares.length; i++) {
+      this.shares[i].percentageLeft = this.$store.state.contract.approvedCoins[i].percentageLeft;
       if(this.shares[i].percentage === undefined) {
-        this.shares[i].percentage = this.item.shares[i].percentage = 0;
+        this.shares[i].percentage = 0;
+        this.initialShares[i].percentage = 0;
       }
     }
   }

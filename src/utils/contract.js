@@ -50,13 +50,13 @@ const getPayees = (contractInstance, address, approvedCoins) => {
 
       let coins = []
       for(let j = 0; j < approvedCoins.length; j++) {
-        let coinShare = await getPayeeShareForCoin(contractInstance, address, payee.self, approvedCoins[j]).catch((error) => {
+        let coinShare = await getPayeeShareForCoin(contractInstance, address, payee.self, approvedCoins[j].address).catch((error) => {
           reject(error);
           return;
         });
 
         coins.push({
-          address: approvedCoins[j],
+          address: approvedCoins[j].address,
           share: coinShare
         });
       }
@@ -87,7 +87,16 @@ const getApprovedCoins = (contractInstance, address) => {
         reject(error);
         return;
       });
-      coins.push(coinAddress);
+
+      let leftCoinPercentage = await getLeftCoinPercentage(contractInstance, address, coinAddress).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      coins.push({
+        address: coinAddress,
+        percentageLeft: 100 - leftCoinPercentage
+      });
     }
 
     resolve(coins);
@@ -156,6 +165,19 @@ const getPayeeShareForCoin = (contractInstance, address, payeeAddress, coinAddre
     });
 
     resolve(share);
+  });
+}
+
+const getLeftCoinPercentage = (contractInstance, address, coinAddress) => {
+  return new Promise(async (resolve, reject) => {
+    let percentage = contractInstance.methods.payerToCoinPercentage(address, coinAddress).call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(percentage);
   });
 }
 

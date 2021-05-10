@@ -4,6 +4,7 @@ const state = () => ({
   isInitialized: false,
   instance: undefined,
   payees: undefined,
+  approvedCoins: undefined,
   error: undefined
 });
 
