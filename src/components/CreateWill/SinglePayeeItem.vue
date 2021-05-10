@@ -8,7 +8,7 @@
     <summary class="text-white font-medium">
       <div class="flex justify-between">
         <p class="select-none">{{ item.address }}</p>
-        <a href="#" class="text-yellow-500 transition duration-300 ease-out hover:text-yellow-400">Edit</a>
+        <a href="#" @click="this.openEditModal" class="text-yellow-500 transition duration-300 ease-out hover:text-yellow-400">Edit</a>
       </div>
     </summary>
     <div class="py-2">
@@ -23,14 +23,42 @@
       </div>
     </div>
   </details>
+  <Modal v-if="isEditModalOn" @close="closeEditModal">
+    <template v-slot:header>
+      Edit Payee
+    </template>
+    <template v-slot:body>
+      <EditPayeeModal @close="closeEditModal" :item="item" />
+    </template>
+  </Modal>
 </template>
 
 <script>
+import Modal from "@/components/Modal.vue";
+import EditPayeeModal from "@/components/CreateWill/EditPayeeModal.vue";
+
 export default {
   name: "SinglePayeeItem",
   props: {
     isLoader: Boolean,
     item: Object
+  },
+  components: {
+    Modal,
+    EditPayeeModal
+  },
+  data: () => {
+    return {
+      isEditModalOn: false
+    }
+  },
+  methods: {
+    openEditModal() {
+      this.isEditModalOn = true;
+    },
+    closeEditModal() {
+      this.isEditModalOn = false;
+    }
   }
 }
 </script>
