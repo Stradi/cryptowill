@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import PayeeList from "@/components/CreateWill/PayeeList.vue";
+import PayeeList from "@/components/Dashboard/PayeeList/PayeeList.vue";
 
 export default {
   name: "Dashboard",

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import SinglePayeeItem from './SinglePayeeItem.vue';
+import SinglePayeeItem from '@/components/Dashboard/PayeeList/SinglePayeeItem.vue';
 
 export default {
   components: { 
