@@ -24,7 +24,7 @@ export default {
     return {
       navItems: [
         { id: 0, text: "Home", url: "/" },
-        { id: 1, text: "Create", url: "/create" },
+        { id: 1, text: "Dashboard", url: "/dashboard" },
         { id: 2, text: "About", url: "/about"}
       ]
     }

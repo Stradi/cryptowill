@@ -12,7 +12,7 @@
 import PayeeList from "@/components/CreateWill/PayeeList.vue";
 
 export default {
-  name: "CreateWill",
+  name: "Dashboard",
   components: {
     PayeeList
   }

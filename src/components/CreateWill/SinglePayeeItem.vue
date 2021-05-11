@@ -11,17 +11,6 @@
         <a href="#" @click="this.openEditModal" class="text-yellow-500 transition duration-300 ease-out hover:text-yellow-400">Edit</a>
       </div>
     </summary>
-    <div class="py-2">
-      <div class="mb-2">
-        <p class="text-white font-medium">Message:</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ item.message === "" ? "No Message" : item.message }}</p>
-      </div>
-      <p class="text-white font-medium">Shares:</p>
-      <div v-for="share, idx in item.shares" :key="idx" class="flex justify-between">
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ item.shares[idx].address }}</p>
-        <p>{{ item.shares[idx].percentage === undefined ? "No Shares" : item.shares[idx].percentage }}</p>
-      </div>
-    </div>
   </details>
   <Modal v-if="isEditModalOn" @close="closeEditModal">
     <template v-slot:header>
