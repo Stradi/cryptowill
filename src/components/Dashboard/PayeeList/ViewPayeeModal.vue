@@ -1,6 +1,10 @@
 <template>
+  <div class="">
+    <p><span class="font-medium">Alias:</span> {{ item.alias || "Charmander" }}</p>
+    <p><span class="font-medium">Address:</span> {{ item.address }}</p>
+  </div>
   <div class="mb-2">
-    <label for="message" class="font-medium block pb-2">Message</label>
+    <label for="message" class="font-medium block pb-2">Message:</label>
     <textarea v-model="message" id="message" name="message" rows="4" cols="60" :placeholder="placeholder" :class="isMessageChanged ? 'ring-2 ring-yellow-500' : ''" class="text-black p-2 rounded-2xl focus:outline-none resize-none"></textarea>
     <label for="shares" class="font-medium block py-2">Shares</label>
     <div v-for="share, idx in this.shares" :key="idx" class="flex flex-col pb-4">
@@ -26,7 +30,6 @@ export default {
       message: this.item.message,
       placeholder: this.item.message === '' ? 'Enter your message' : 'Type to update the message',
       //Deep copy
-      initialShares: JSON.parse(JSON.stringify(this.item.shares)),
       shares: JSON.parse(JSON.stringify(this.item.shares)),
       changedShares: []
     }
@@ -42,7 +45,7 @@ export default {
   methods: {
     percentageChanged(idx) {
       this.shares[idx].percentage = Math.max(0, Math.min(Number.parseInt(this.shares[idx].percentage), this.shares[idx].percentageLeft));
-      this.changedShares[idx] = this.shares[idx].percentage !== this.initialShares[idx].percentage;
+      this.changedShares[idx] = this.shares[idx].percentage !== Number.parseInt(this.$props.item.shares[idx].share);
     }
   },
   beforeMount() {
@@ -50,7 +53,7 @@ export default {
       this.shares[i].percentageLeft = this.$store.state.contract.approvedCoins[i].percentageLeft;
       if(this.shares[i].percentage === undefined) {
         this.shares[i].percentage = 0;
-        this.initialShares[i].percentage = 0;
+        this.$props.item.shares[i].share = 0;
       }
     }
   }
