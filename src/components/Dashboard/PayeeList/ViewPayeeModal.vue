@@ -20,7 +20,7 @@
         <tr v-for="share, idx in this.shares" :key="share.address" class="text-center">
           <td class="py-2">{{ share.name }}</td>
           <td>
-            <input v-model="share.share" v-on:input="percentageChanged(idx)" type="range" min="0" max="100" class="w-full align-middle" />
+            <input v-model="share.share" v-on:input="percentageChanged(idx)" type="range" min="0" max="100" class="w-full align-middle" :class="changedShares[idx] ? 'ring-2 ring-yellow-400' : ''"/>
           </td>
           <td>
             <span class="text-center">{{ share.share }}</span>
@@ -91,5 +91,25 @@ export default {
 </script>
 
 <style>
+  input[type=range] {
+    -webkit-appearance: none;
+    overflow: hidden;
+    width: 100%;
+    background: transparent;
+  }
 
+  input[type=range]::-webkit-slider-thumb {
+    @apply w-4;
+    @apply h-4;
+    margin-top: 0px;
+    @apply appearance-none;
+    @apply bg-gray-800;
+    box-shadow: -300px 0 0 300px #A3A3A3;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    @apply w-full;
+    @apply h-4;
+    @apply bg-gray-500;
+  }
 </style>
