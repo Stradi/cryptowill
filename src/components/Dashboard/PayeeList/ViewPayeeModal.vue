@@ -8,7 +8,7 @@
     <textarea v-model="message" id="message" name="message" rows="4" cols="70" :placeholder="placeholder" :class="isMessageChanged ? 'ring-2 ring-yellow-500' : ''" class="text-black p-2 rounded-2xl focus:outline-none resize-none"></textarea>
     <div class="flex justify-between py-2">
       <p for="shares" class="font-medium">Shares</p>
-      <a href="#" class="font-medium text-yellow-500 transition ease-out duration-200 hover:text-yellow-400">Add new share</a>
+      <a href="#" @click="isAddNewShareModalEnabled = true" class="font-medium text-yellow-500 transition ease-out duration-200 hover:text-yellow-400">Add new share</a>
     </div>
     <table class="table-fixed">
       <thead>
@@ -33,22 +33,37 @@
       <a href="#" @click="this.$emit('close')" class="py-2 font-medium bg-red-700 rounded-3xl transition duration-300 ease-out hover:bg-red-600 w-1/5">Cancel</a>
     </div>
   </div>
+  <Modal v-if="isAddNewShareModalEnabled" @close="isAddNewShareModalEnabled = false">
+    <template v-slot:header>
+      Add new share
+    </template>
+    <template v-slot:body>
+      <AddNewShareModal />
+    </template>
+  </Modal>
 </template>
 
 <script>
+import Modal from "@/components/Modal.vue";
+import AddNewShareModal from "@/components/Dashboard/PayeeList/AddNewShareModal.vue";
 import { TOKENS } from "@/utils/token.js";
 
 export default {
   name: "EditPayeeModal",
   props: ["item"],
   emits: ["close"],
+  components: {
+    Modal,
+    AddNewShareModal
+  },
   data: function() {
     return {
       message: this.item.message,
       placeholder: this.item.message === '' ? 'Enter your message' : 'Type to update the message',
       //Deep copy
       shares: JSON.parse(JSON.stringify(this.item.shares)),
-      changedShares: []
+      changedShares: [],
+      isAddNewShareModalEnabled: false
     }
   },
   computed: {
