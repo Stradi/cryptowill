@@ -44,8 +44,16 @@ const actions = {
       commit("setError", { error });
       return;
     });
-
-    await dispatch("getPayees");
+  },
+  async setPayeeShare({ commit, state, rootState, dispatch }, { payeeAddress, coinAddress, share }) {
+    await contract.setPayeeShare(state.instance, rootState.web3.account, {
+      payeeAddress,
+      coinAddress,
+      share
+    }).catch((error) => {
+      commit("setError", { error });
+      return;
+    });
   }
 }
 
