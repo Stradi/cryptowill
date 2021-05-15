@@ -82,6 +82,20 @@ export default {
     },
     clamp(val, min, max) {
       return Math.min(Math.max(val, min), max);
+    },
+    async save() {
+      let newShares = this.shares.filter((item, idx) => {
+        return this.changedShares[idx];
+      });
+
+      for(let i = 0; i < newShares.length; i++) {
+        //Call updateShare function
+      }
+
+      if(this.isMessageChanged) {
+        await this.$store.dispatch("contract/setPayeeMessage", { address: this.item.address, message: this.message });
+        console.log("Saved, i think?")
+      }
     }
   },
   beforeMount() {

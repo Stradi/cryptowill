@@ -38,6 +38,14 @@ const actions = {
     commit("registerApprovedCoins", {
       approvedCoins
     });
+  },
+  async setPayeeMessage({ commit, state, rootState, dispatch }, { address, message }) {
+    await contract.setPayeeMessage(state.instance, rootState.web3.account, { payeeAddress: address, message }).catch((error) => {
+      commit("setError", { error });
+      return;
+    });
+
+    await dispatch("getPayees");
   }
 }
 
