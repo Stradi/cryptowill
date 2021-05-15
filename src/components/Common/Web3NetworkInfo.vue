@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import ConnectWeb3Button from "@/components/ConnectWeb3Button.vue";
+import ConnectWeb3Button from "@/components/Common/ConnectWeb3Button.vue";
 
 export default {
   name: "Web3NetworkInfo",

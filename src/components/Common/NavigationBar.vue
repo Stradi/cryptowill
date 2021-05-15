@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import NavigationLink from "./NavigationLink";
+import NavigationLink from "@/components/Common/NavigationLink";
 
 export default {
   name: "NavigationBar",

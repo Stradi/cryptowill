@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import Modal from "@/components/Modal.vue";
+import Modal from "@/components/Common/Modal.vue";
 import ViewPayeeModal from "@/components/Dashboard/PayeeList/ViewPayeeModal.vue";
 
 export default {

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import SearchDropdown from "@/components/SearchDropdown.vue";
+import SearchDropdown from "@/components/Common/SearchDropdown.vue";
 
 import { TOKENS } from "@/utils/token.js";
 

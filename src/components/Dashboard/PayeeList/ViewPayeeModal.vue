@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import Modal from "@/components/Modal.vue";
+import Modal from "@/components/Common/Modal.vue";
 import AddNewShareModal from "@/components/Dashboard/PayeeList/AddNewShareModal.vue";
 import { TOKENS } from "@/utils/token.js";
 

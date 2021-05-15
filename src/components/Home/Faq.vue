@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import FaqItem from "@/components/FaqItem.vue"
+import FaqItem from "@/components/Home/FaqItem.vue"
 
 export default {
   name: "Faq",

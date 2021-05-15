@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import Hero from "@/components/Hero.vue";
-import ImageTextCard from "@/components/ImageTextCard.vue";
-import Faq from "@/components/Faq.vue";
+import Hero from "@/components/Home/Hero.vue";
+import ImageTextCard from "@/components/Home/ImageTextCard.vue";
+import Faq from "@/components/Home/Faq.vue";
 
 export default {
   name: "Home",

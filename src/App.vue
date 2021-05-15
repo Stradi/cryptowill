@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import NavigationBar from "@/components/NavigationBar.vue";
-import Footer from "@/components/Footer.vue";
-import Web3NetworkInfo from "@/components/Web3NetworkInfo.vue";
+import NavigationBar from "@/components/Common/NavigationBar.vue";
+import Footer from "@/components/Common/Footer.vue";
+import Web3NetworkInfo from "@/components/Common/Web3NetworkInfo.vue";
 
 export default {
   name: "App",
