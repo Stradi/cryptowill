@@ -62,7 +62,6 @@ export default {
     },
     async save() {
       let token = this.getToken(this.selectedToken);
-      console.log("Started")
       if(token === null) {
         await this.$store.dispatch("contract/approveToken", { coinAddress: this.selectedToken });
       }
@@ -80,11 +79,13 @@ export default {
   },
   mounted() {
     //Remove tokens which payee has share of it.
-    let tokenAddresses = Object.keys(TOKENS["TESTNET"]);
-    tokenAddresses.filter((item) => {
-      if(!this.payee.shares.some(share => share.address == item)) {
-        this.tokens.push(TOKENS["TESTNET"][item])
-        return item;
+    let tokenAddresses = Object.keys(TOKENS["TESTNET"]).map((val) => {
+      return val.toLowerCase();
+    });
+
+    tokenAddresses.forEach((item) => {
+      if(!this.payee.shares.some(share => share.address.toLowerCase() === item)) {
+        this.tokens.push(TOKENS["TESTNET"][item]);
       }
     });
   }

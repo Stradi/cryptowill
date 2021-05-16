@@ -114,18 +114,17 @@ export default {
       }
 
       this.loading = false;
-      console.log("Everything completed ;)");
     }
   },
   beforeMount() {
     for(let i = 0; i < this.shares.length; i++) {
       this.shares[i].percentageLeft = this.$store.state.contract.approvedCoins[i].percentageLeft;
       
-      if(TOKENS["TESTNET"][this.shares[i].address] === undefined) {
-        this.shares[i].name = this.shares[i].address;
-      } else {
-        this.shares[i].name = TOKENS["TESTNET"][this.shares[i].address];
-      }
+      Object.keys(TOKENS["TESTNET"]).find((key) => {
+        if(key.toLowerCase() === this.shares[i].address.toLowerCase()) {
+          this.shares[i].name = TOKENS["TESTNET"][key];
+        }
+      });
 
       if(this.shares[i].share === undefined) {
         this.shares[i].share = 0;
