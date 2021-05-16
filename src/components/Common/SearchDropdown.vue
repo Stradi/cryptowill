@@ -8,7 +8,7 @@
         </li>
       </ul>
       <ul v-else>
-        <li class="px-2 select-none">Token not found</li>
+        <li class="px-2 py-1 select-none">Token not found</li>
       </ul>
     </div>
   </div>
