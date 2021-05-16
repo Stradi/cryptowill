@@ -4,7 +4,7 @@
     <div class="py-2">
       <label>Percentage</label>
       <div>
-        <input v-model.number="percentage" type="range" min="0" :max="this.percentageLeftForToken || '100'" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
+        <input v-model.number="percentage" type="range" :disabled="!this.selectedToken" min="0" :max="this.percentageLeftForToken || '100'" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
         <p class="text-center">%{{ percentage }}</p>
       </div>
     </div>
@@ -42,18 +42,23 @@ export default {
   },
   methods: {
     selectedTokenChanged(newToken) {
-      let selectedTokenAddress = Object.entries(TOKENS["TESTNET"]).filter((item) => {
-        return item[1] === newToken
-      })[0][0];
-      this.selectedToken = selectedTokenAddress;
-      
-      let token = this.getToken(this.selectedToken);
-      this.percentage = 0;
-      if(token === null) {
-        this.percentageLeftForToken = 100;
+      if(newToken !== undefined) {
+        let selectedTokenAddress = Object.entries(TOKENS["TESTNET"]).filter((item) => {
+          return item[1] === newToken
+        })[0][0];
+        this.selectedToken = selectedTokenAddress;
+        
+        let token = this.getToken(this.selectedToken);
+        this.percentage = 0;
+        if(token === null) {
+          this.percentageLeftForToken = 100;
+        } else {
+          this.percentageLeftForToken = token.percentageLeft;
+        }
       } else {
-        this.percentageLeftForToken = token.percentageLeft;
+        this.selectedToken = undefined;
       }
+
     },
     async save() {
       let token = this.getToken(this.selectedToken);
