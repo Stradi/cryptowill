@@ -8,7 +8,7 @@
         <p class="text-center">%{{ percentage }}</p>
       </div>
     </div>
-    <a href="#" :class="!isPercentageSet || !isTokenSelected ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="block text-center font-medium p-2 rounded-3xl bg-yellow-600 text-white-500 transition ease-out duration-200 hover:bg-yellow-500">Add share</a>
+    <a href="#" @click="save" :class="!isPercentageSet || !isTokenSelected ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="block text-center font-medium p-2 rounded-3xl bg-yellow-600 text-white-500 transition ease-out duration-200 hover:bg-yellow-500">Add share</a>
   </div>
 </template>
 
@@ -22,9 +22,11 @@ export default {
   components: {
     SearchDropdown
   },
+  props: ["payee"],
+  emits: ["close"],
   data: function() {
     return {
-      tokens: Object.values(TOKENS["TESTNET"]),
+      tokens: [],
       selectedToken: undefined,
       percentage: 0,
       percentageLeftForToken: 0
@@ -53,12 +55,12 @@ export default {
         this.percentageLeftForToken = token.percentageLeft;
       }
     },
-    save() {
-      let isTokenApproved = false;
+    async save() {
       let token = this.getToken(this.selectedToken);
       if(token !== null) {
-        isTokenApproved = true;
         //Call set share from here.
+        await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.payee.address, coinAddress: this.selectedToken, share: this.percentage });
+        this.$emit("close");
       } else {
         //Call approveCoin and then set share.
       }
@@ -71,6 +73,16 @@ export default {
 
       return token[0];
     }
+  },
+  mounted() {
+    //Remove tokens which payee has share of it.
+    let tokenAddresses = Object.keys(TOKENS["TESTNET"]);
+    tokenAddresses.filter((item) => {
+      if(!this.payee.shares.some(share => share.address == item)) {
+        this.tokens.push(TOKENS["TESTNET"][item])
+        return item;
+      }
+    });
   }
 }
 </script>

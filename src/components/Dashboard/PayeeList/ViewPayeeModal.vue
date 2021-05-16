@@ -42,7 +42,7 @@
         Add new share
       </template>
       <template v-slot:body>
-        <AddNewShareModal />
+        <AddNewShareModal @close="isAddNewShareModalEnabled = false" :payee="this.item" />
       </template>
     </Modal>
   </div>
