@@ -129,6 +129,19 @@ const setPayeeShare = (contractInstance, address, { payeeAddress, coinAddress, s
   });
 }
 
+const approveToken = (contractInstance, address, { coinAddress }) => {
+  return new Promise(async (resolve, reject) => {
+    await contractInstance.methods.approveToken(coinAddress).send({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve();
+  });
+}
+
 const getPayeeCount = (contractInstance, address) => {
   return new Promise(async (resolve, reject) => {
     let payeeCount = await contractInstance.methods.getPayeeCount().call({
@@ -207,4 +220,4 @@ const getLeftCoinPercentage = (contractInstance, address, coinAddress) => {
   });
 }
 
-export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare };
+export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare, approveToken };

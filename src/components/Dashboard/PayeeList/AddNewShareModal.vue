@@ -62,13 +62,12 @@ export default {
     },
     async save() {
       let token = this.getToken(this.selectedToken);
-      if(token !== null) {
-        //Call set share from here.
-        await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.payee.address, coinAddress: this.selectedToken, share: this.percentage });
-        this.$emit("close");
-      } else {
-        //Call approveCoin and then set share.
+      console.log("Started")
+      if(token === null) {
+        await this.$store.dispatch("contract/approveToken", { coinAddress: this.selectedToken });
       }
+      await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.payee.address, coinAddress: this.selectedToken, share: this.percentage });        
+      this.$emit("close");
     },
     getToken(address) {
       let token = this.$store.state.contract.approvedCoins.filter((item) => { return item.address == address });

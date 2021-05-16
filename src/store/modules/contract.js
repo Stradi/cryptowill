@@ -39,18 +39,24 @@ const actions = {
       approvedCoins
     });
   },
-  async setPayeeMessage({ commit, state, rootState, dispatch }, { address, message }) {
+  async setPayeeMessage({ commit, state, rootState }, { address, message }) {
     await contract.setPayeeMessage(state.instance, rootState.web3.account, { payeeAddress: address, message }).catch((error) => {
       commit("setError", { error });
       return;
     });
   },
-  async setPayeeShare({ commit, state, rootState, dispatch }, { payeeAddress, coinAddress, share }) {
+  async setPayeeShare({ commit, state, rootState }, { payeeAddress, coinAddress, share }) {
     await contract.setPayeeShare(state.instance, rootState.web3.account, {
       payeeAddress,
       coinAddress,
       share
     }).catch((error) => {
+      commit("setError", { error });
+      return;
+    });
+  },
+  async approveToken({ commit, state, rootState }, { coinAddress }) {
+    await contract.approveToken(state.instance, rootState.web3.account, { coinAddress }).catch((error) => {
       commit("setError", { error });
       return;
     });
