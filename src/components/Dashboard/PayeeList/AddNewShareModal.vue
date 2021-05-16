@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="p-4 w-96">
     <SearchDropdown placeholder="Search for a Token" :items="tokens" @selected="selectedTokenChanged" />
     <div class="py-2">
       <label>Percentage</label>
       <div>
-        <input v-model="percentage" type="range" min="0" max="100" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
+        <input v-model.number="percentage" type="range" min="0" :max="this.percentageLeftForToken || '100'" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
         <p class="text-center">%{{ percentage }}</p>
       </div>
     </div>
@@ -26,7 +26,8 @@ export default {
     return {
       tokens: Object.values(TOKENS["TESTNET"]),
       selectedToken: undefined,
-      percentage: "0"
+      percentage: 0,
+      percentageLeftForToken: 0
     }
   },
   computed: {
@@ -34,7 +35,7 @@ export default {
       return this.selectedToken !== undefined;
     },
     isPercentageSet() {
-      return this.percentage !== "0";
+      return this.percentage !== 0;
     }
   },
   methods: {
@@ -43,9 +44,32 @@ export default {
         return item[1] === newToken
       })[0][0];
       this.selectedToken = selectedTokenAddress;
+      
+      let token = this.getToken(this.selectedToken);
+      this.percentage = 0;
+      if(token === null) {
+        this.percentageLeftForToken = 100;
+      } else {
+        this.percentageLeftForToken = token.percentageLeft;
+      }
     },
     save() {
+      let isTokenApproved = false;
+      let token = this.getToken(this.selectedToken);
+      if(token !== null) {
+        isTokenApproved = true;
+        //Call set share from here.
+      } else {
+        //Call approveCoin and then set share.
+      }
+    },
+    getToken(address) {
+      let token = this.$store.state.contract.approvedCoins.filter((item) => { return item.address == address });
+      if(token.length === 0) {
+        return null;
+      }
 
+      return token[0];
     }
   }
 }
