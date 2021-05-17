@@ -58,7 +58,6 @@ export default {
       } else {
         this.selectedToken = undefined;
       }
-
     },
     async save() {
       let token = this.getToken(this.selectedToken);
@@ -69,7 +68,7 @@ export default {
       this.$emit("close");
     },
     getToken(address) {
-      let token = this.$store.state.contract.approvedCoins.filter((item) => { return item.address == address });
+      let token = this.$store.state.contract.approvedCoins.filter((item) => { return item.address.toLowerCase() == address.toLowerCase() });
       if(token.length === 0) {
         return null;
       }

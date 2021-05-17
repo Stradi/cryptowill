@@ -14,27 +14,32 @@
         <p for="shares" class="font-medium">Shares</p>
         <a href="#" @click="isAddNewShareModalEnabled = true" class="font-medium text-yellow-500 transition ease-out duration-200 hover:text-yellow-400">Add new share</a>
       </div>
-      <table class="table-fixed">
-        <thead>
-          <th class="w-2/12 text-center">Token</th>
-          <th class="w-8/12 text-center"></th>
-          <th class="w-2/12 text-center">Percentage</th>
-        </thead>
-        <tbody>
-          <tr v-for="share, idx in this.shares" :key="share.address" class="text-center">
-            <td class="py-2">{{ share.name }}</td>
-            <td>
-              <input v-model="share.share" v-on:input="percentageChanged(idx)" type="range" min="0" max="100" class="w-full align-middle" :class="changedShares[idx] ? 'ring-2 ring-yellow-400' : ''"/>
-            </td>
-            <td>
-              <span class="text-center">{{ share.share }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="flex justify-evenly text-center">
-        <a href="#" @click="save" :class="!this.isAnythingChanged ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="py-2 w-1/5 font-medium bg-yellow-700 rounded-3xl transition duration-300 ease-out hover:bg-yellow-600 hover:shadow-lg">Save</a>
-        <a href="#" @click="this.$emit('close')" class="py-2 font-medium bg-red-700 rounded-3xl transition duration-300 ease-out hover:bg-red-600 w-1/5">Cancel</a>
+      <div v-if="this.shares.length > 0">
+        <table class="table-fixed">
+          <thead>
+            <th class="w-2/12 text-center">Token</th>
+            <th class="w-8/12 text-center"></th>
+            <th class="w-2/12 text-center">Percentage</th>
+          </thead>
+          <tbody>
+            <tr v-for="share, idx in this.shares" :key="share.address" class="text-center">
+              <td class="py-2">{{ share.name }}</td>
+              <td>
+                <input v-model="share.share" v-on:input="percentageChanged(idx)" type="range" min="0" max="100" class="w-full align-middle" :class="changedShares[idx] ? 'ring-2 ring-yellow-400' : ''"/>
+              </td>
+              <td>
+                <span class="text-center">{{ share.share }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="flex justify-evenly text-center">
+          <a href="#" @click="save" :class="!this.isAnythingChanged ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="py-2 w-1/5 font-medium bg-yellow-700 rounded-3xl transition duration-300 ease-out hover:bg-yellow-600 hover:shadow-lg">Save</a>
+          <a href="#" @click="this.$emit('close')" class="py-2 font-medium bg-red-700 rounded-3xl transition duration-300 ease-out hover:bg-red-600 w-1/5">Cancel</a>
+        </div>
+      </div>
+      <div v-else class="text-center">
+        No shares set for this Payee. Add a share now.
       </div>
     </div>
     <Modal v-if="isAddNewShareModalEnabled" @close="isAddNewShareModalEnabled = false">
@@ -117,8 +122,13 @@ export default {
     }
   },
   beforeMount() {
+    console.log("---------");
     for(let i = 0; i < this.shares.length; i++) {
-      this.shares[i].percentageLeft = this.$store.state.contract.approvedCoins[i].percentageLeft;
+      this.$store.state.contract.approvedCoins.filter((item) => {
+        if(item.address == this.shares[i].address) {
+          this.shares[i].percentageLeft = item.percentageLeft;
+        }
+      });
       
       Object.keys(TOKENS["TESTNET"]).find((key) => {
         if(key.toLowerCase() === this.shares[i].address.toLowerCase()) {
