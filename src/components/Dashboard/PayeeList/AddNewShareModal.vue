@@ -79,12 +79,10 @@ export default {
   },
   mounted() {
     //Remove tokens which payee has share of it.
-    let tokenAddresses = Object.keys(TOKENS["TESTNET"]).map((val) => {
-      return val.toLowerCase();
-    });
+    let tokenAddresses = Object.keys(TOKENS["TESTNET"]);
 
     tokenAddresses.forEach((item) => {
-      if(!this.payee.shares.some(share => share.address.toLowerCase() === item)) {
+      if(!this.payee.shares.some(share => share.address.toLowerCase() === item.toLowerCase())) {
         this.tokens.push(TOKENS["TESTNET"][item]);
       }
     });
