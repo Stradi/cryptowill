@@ -55,10 +55,12 @@ const getPayees = (contractInstance, address, approvedCoins) => {
           return;
         });
 
-        coins.push({
-          address: approvedCoins[j].address,
-          share: coinShare
-        });
+        if(Number.parseInt(coinShare) !== 0) {
+          coins.push({
+            address: approvedCoins[j].address,
+            share: coinShare
+          });
+        }
       }
 
       payees.push({
