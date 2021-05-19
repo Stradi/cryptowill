@@ -136,7 +136,6 @@ export default {
         this.$store.state.contract.approvedCoins.filter((item) => {
           if(item.address == this.shares[i].address) {
             this.shares[i].percentageLeft = item.percentageLeft;
-            console.log(item.percentageLeft, this.shares[i].percentageLeft);
           }
         });
         

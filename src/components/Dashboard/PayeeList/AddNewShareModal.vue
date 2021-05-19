@@ -4,8 +4,9 @@
     <div class="py-2">
       <label>Percentage</label>
       <div>
-        <input v-model.number="percentage" type="range" :disabled="!this.selectedToken" min="0" :max="this.percentageLeftForToken || '100'" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
-        <p class="text-center">%{{ percentage }}</p>
+        <input v-model.number="percentage" type="range" :disabled="!this.selectedToken" min="0" :max="this.percentageLeftForToken" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
+        <p v-if="this.percentageLeftForToken !== 0" class="text-center">%{{ percentage }}</p>
+        <p v-else class="text-center">No share left for this token.</p>
       </div>
     </div>
     <a href="#" @click="save" :class="!isPercentageSet || !isTokenSelected ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="block text-center font-medium p-2 rounded-3xl bg-yellow-600 text-white-500 transition ease-out duration-200 hover:bg-yellow-500">Add share</a>
@@ -29,7 +30,7 @@ export default {
       tokens: [],
       selectedToken: undefined,
       percentage: 0,
-      percentageLeftForToken: 0
+      percentageLeftForToken: -1
     }
   },
   computed: {
@@ -65,6 +66,9 @@ export default {
         await this.$store.dispatch("contract/approveToken", { coinAddress: this.selectedToken });
       }
       await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.payee.address, coinAddress: this.selectedToken, share: this.percentage });        
+      
+      await this.$store.dispatch("contract/getApprovedCoins");
+      await this.$store.dispatch("contract/getPayees");
       this.$emit("close");
     },
     getToken(address) {
