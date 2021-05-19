@@ -85,6 +85,16 @@ export default {
       return this.isMessageChanged || this.changedShares.filter(Boolean).length > 0;
     }
   },
+  watch: {
+    item: function(newValue) {
+      this.shares = JSON.parse(JSON.stringify(newValue.shares));
+      this.updateTokens();
+    
+      this.shares.forEach((item, idx) => {
+        this.percentageChanged(idx);
+      });
+    }
+  },
   methods: {
     percentageChanged(idx) {
       let initialShare = Number.parseInt(this.item.shares[idx].share);
@@ -115,34 +125,38 @@ export default {
       }
 
       if(needRefresh) {
+        await this.$store.dispatch("contract/getApprovedCoins");
         await this.$store.dispatch("contract/getPayees");
       }
 
       this.loading = false;
+    },
+    updateTokens() {
+      for(let i = 0; i < this.shares.length; i++) {
+        this.$store.state.contract.approvedCoins.filter((item) => {
+          if(item.address == this.shares[i].address) {
+            this.shares[i].percentageLeft = item.percentageLeft;
+            console.log(item.percentageLeft, this.shares[i].percentageLeft);
+          }
+        });
+        
+        Object.keys(TOKENS["TESTNET"]).find((key) => {
+          if(key.toLowerCase() === this.shares[i].address.toLowerCase()) {
+            this.shares[i].name = TOKENS["TESTNET"][key];
+          }
+        });
+  
+        if(this.shares[i].share === undefined) {
+          this.shares[i].share = 0;
+          this.$props.item.shares[i].share = 0;
+        } else {
+          this.shares[i].share = Number.parseInt(this.shares[i].share);
+        }
+      }
     }
   },
   beforeMount() {
-    console.log("---------");
-    for(let i = 0; i < this.shares.length; i++) {
-      this.$store.state.contract.approvedCoins.filter((item) => {
-        if(item.address == this.shares[i].address) {
-          this.shares[i].percentageLeft = item.percentageLeft;
-        }
-      });
-      
-      Object.keys(TOKENS["TESTNET"]).find((key) => {
-        if(key.toLowerCase() === this.shares[i].address.toLowerCase()) {
-          this.shares[i].name = TOKENS["TESTNET"][key];
-        }
-      });
-
-      if(this.shares[i].share === undefined) {
-        this.shares[i].share = 0;
-        this.$props.item.shares[i].share = 0;
-      } else {
-        this.shares[i].share = Number.parseInt(this.shares[i].share);
-      }
-    }
+    this.updateTokens();
   }
 }
 </script>
