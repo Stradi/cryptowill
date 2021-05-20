@@ -14,6 +14,7 @@ import web3 from "@/utils/web3.js";
 
 export default {
   name: "AddNewPayeeModal",
+  emits: ["close"],
   data: function() {
     return {
       address: "",
@@ -24,8 +25,11 @@ export default {
     }
   },
   methods: {
-    save() {
-        
+    async save() {
+      await this.$store.dispatch("contract/addPayee", { payeeAddress: this.address });
+      await this.$store.dispatch("contract/getPayees");
+
+      this.$emit("close");
     },
     onAddressChange() {
       web3.isAddressValid(this.address, this.payeeAddresses, this.selfAddress).then(() => {

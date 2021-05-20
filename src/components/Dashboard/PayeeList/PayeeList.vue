@@ -17,7 +17,7 @@
       Add new payee
     </template>
     <template v-slot:body>
-      <AddNewPayeeModal />
+      <AddNewPayeeModal @close="isAddNewPayeeModalOn = false" />
     </template>
   </Modal>
 </template>

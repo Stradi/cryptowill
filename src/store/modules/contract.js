@@ -60,6 +60,12 @@ const actions = {
       commit("setError", { error });
       return;
     });
+  },
+  async addPayee({ commit, state, rootState }, { payeeAddress }) {
+    await contract.addPayee(state.instance, rootState.web3.account, { payeeAddress }).catch((error) => {
+      commit("setError", { error });
+      return;
+    });
   }
 }
 
