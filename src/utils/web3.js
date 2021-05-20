@@ -69,4 +69,27 @@ const getAccount = async (instance) => {
   });
 }
 
-export default { connect, getInstance, getNetworkId, getAccount };
+const isAddressValid = (address, payeeAddresses, selfAddress) => {
+  return new Promise((resolve, reject) => {
+    if(payeeAddresses.includes(address)) {
+      reject("This address is already a payee.");
+    }
+  
+    if(selfAddress == address) {
+      reject("You can't add yourself as payee.");
+    }
+  
+    if(address == "0x0000000000000000000000000000000000000000") {
+      reject("You can't add 0x00..0 address as payee.");
+    }
+  
+    try {
+      Web3.utils.toChecksumAddress(address);
+      resolve();
+    } catch {
+      reject("Address is invalid.");
+    }
+  });
+}
+
+export default { connect, getInstance, getNetworkId, getAccount, isAddressValid };
