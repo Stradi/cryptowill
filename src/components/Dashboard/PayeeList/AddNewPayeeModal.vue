@@ -3,9 +3,11 @@
     <div class="text-left pb-4">
       <label for="address" class="font-medium">Address</label>
       <input v-model="address" name="address" id="address" type="text" placeholder="0x0000000000000000000000000000000000000000" @input="onAddressChange" :class="isAddressValid ? 'ring-yellow-500' : address == '' ? '' : 'ring-red-600'" class="ring-2 ring-transparent mt-1 p-2 text-black rounded-2xl w-full outline-none">
+      <label for="alias" class="font-medium">Alias</label>
+      <input v-model="alias" name="alias" id="alias" type="text" placeholder="Charmander" @input="onAddressChange" :class="alias != '' ? 'ring-yellow-500' : ''" class="ring-2 ring-transparent mt-1 p-2 text-black rounded-2xl w-full outline-none">
       <p v-if="this.errorMessage !== '' && this.address != ''">{{ this.errorMessage }}</p>
     </div>
-    <a href="#" @click="save" :class="!this.isAddressValid ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="block text-center font-medium p-2 rounded-3xl bg-yellow-600 text-white-500 transition ease-out duration-200 hover:bg-yellow-500">Add payee</a>
+    <a href="#" @click="save" :class="(!this.isAddressValid || this.alias === '') ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="block text-center font-medium p-2 rounded-3xl bg-yellow-600 text-white-500 transition ease-out duration-200 hover:bg-yellow-500">Add payee</a>
   </div>
 </template>
 
@@ -18,6 +20,7 @@ export default {
   data: function() {
     return {
       address: "",
+      alias: "",
       payeeAddresses: [],
       selfAddress: "",
       errorMessage: "",
@@ -26,7 +29,7 @@ export default {
   },
   methods: {
     async save() {
-      await this.$store.dispatch("contract/addPayee", { payeeAddress: this.address });
+      await this.$store.dispatch("contract/addPayee", { payeeAddress: this.address, alias: this.alias });
       await this.$store.dispatch("contract/getPayees");
 
       this.$emit("close");

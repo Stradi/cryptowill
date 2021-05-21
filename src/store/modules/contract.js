@@ -61,8 +61,8 @@ const actions = {
       return;
     });
   },
-  async addPayee({ commit, state, rootState }, { payeeAddress }) {
-    await contract.addPayee(state.instance, rootState.web3.account, { payeeAddress }).catch((error) => {
+  async addPayee({ commit, state, rootState }, { payeeAddress, alias }) {
+    await contract.addPayee(state.instance, rootState.web3.account, { payeeAddress, alias }).catch((error) => {
       commit("setError", { error });
       return;
     });

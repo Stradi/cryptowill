@@ -9,7 +9,12 @@
         <SinglePayeeItem isLoader />
         <SinglePayeeItem isLoader />
       </div>
-      <SinglePayeeItem v-for="item, idx in payeeList" :key=idx :item=item />
+      <div v-if="payeeList !== undefined && payeeList.length === 0" class="text-center text-lg py-4">
+        You have no payees. Add one now.
+      </div>
+      <div v-else>
+        <SinglePayeeItem v-for="item, idx in payeeList" :key=idx :item=item />
+      </div>
     </div>
   </div>
   <Modal v-if="isAddNewPayeeModalOn" @close="isAddNewPayeeModalOn = false">

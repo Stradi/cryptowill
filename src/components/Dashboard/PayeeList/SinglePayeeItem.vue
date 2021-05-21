@@ -5,7 +5,7 @@
     </div>
   </div>
   <div v-else class="m-2 py-2 px-4 flex justify-between rounded-3xl bg-gray-900 bg-opacity-40 transition duration-100 ease-out hover:bg-opacity-75">
-    <p class="select-none pr-8">{{ item.address }}</p>
+    <p class="select-none pr-8">{{ item.alias }}</p>
     <a href="#" @click="this.openViewModal" class="text-yellow-500 transition duration-300 ease-out hover:text-yellow-400">View more</a>
   </div>
   <Modal v-if="isViewModalOn" @close="this.closeViewModal">

@@ -65,6 +65,7 @@ const getPayees = (contractInstance, address, approvedCoins) => {
 
       payees.push({
         address: payee.self,
+        alias: payee.name,
         isConfirmed: payee.isConfirmed,
         isWithdrawed: payee.isWithdrawed,
         message: payee.message,
@@ -144,9 +145,9 @@ const approveToken = (contractInstance, address, { coinAddress }) => {
   });
 }
 
-const addPayee = (contractInstance, address, { payeeAddress }) => {
+const addPayee = (contractInstance, address, { payeeAddress, alias }) => {
   return new Promise(async (resolve, reject) => {
-    await contractInstance.methods.addPayee(payeeAddress).send({
+    await contractInstance.methods.addPayee(payeeAddress, alias).send({
       from: address
     }).catch((error) => {
       reject(error);

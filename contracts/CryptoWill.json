@@ -1,5 +1,49 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_payeeAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "addPayee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_coinAddress",
+				"type": "address"
+			}
+		],
+		"name": "approveToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_payer",
+				"type": "address"
+			}
+		],
+		"name": "confirm",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -110,6 +154,31 @@
 				"type": "address"
 			},
 			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "_newName",
+				"type": "string"
+			}
+		],
+		"name": "PayeeNameChanged",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "_payer",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "_payee",
+				"type": "address"
+			},
+			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "_coin",
@@ -137,6 +206,85 @@
 		],
 		"name": "PayerDeathConfirmed",
 		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_payeeAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_newName",
+				"type": "string"
+			}
+		],
+		"name": "setNameOfPayee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_payeeAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_newMessage",
+				"type": "string"
+			}
+		],
+		"name": "setPayeeMessage",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_payeeAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_coinAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_percentage",
+				"type": "uint256"
+			}
+		],
+		"name": "setShareOfPayee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_new",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -173,24 +321,11 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_payeeAddress",
+				"name": "_payer",
 				"type": "address"
 			}
 		],
-		"name": "addPayee",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_coinAddress",
-				"type": "address"
-			}
-		],
-		"name": "approveToken",
+		"name": "withdrawFromPayer",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -217,19 +352,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_payer",
-				"type": "address"
-			}
-		],
-		"name": "confirm",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -456,6 +578,11 @@
 			},
 			{
 				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
 				"name": "message",
 				"type": "string"
 			}
@@ -480,80 +607,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_payeeAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_newMessage",
-				"type": "string"
-			}
-		],
-		"name": "setPayeeMessage",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_payeeAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_coinAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_percentage",
-				"type": "uint256"
-			}
-		],
-		"name": "setShareOfPayee",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_new",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_payer",
-				"type": "address"
-			}
-		],
-		"name": "withdrawFromPayer",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]
