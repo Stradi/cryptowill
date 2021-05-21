@@ -1,6 +1,6 @@
 <template>
   <div v-if="loading" class="bg-gray-900 bg-opacity-95 absolute w-full h-full">
-    <p class="text-center">Loading</p>
+    <p class="relative top-1/3 text-center">Waiting for {{ this.transactionStatus }} / {{ this.pendingTransactionCount }} transactions.</p>
   </div>
   <div class="px-4 py-2">
     <div>
@@ -74,7 +74,9 @@ export default {
       //Deep copy
       shares: JSON.parse(JSON.stringify(this.item.shares)),
       changedShares: [],
-      isAddNewShareModalEnabled: false
+      isAddNewShareModalEnabled: false,
+      pendingTransactionCount: 0,
+      transactionStatus: 0
     }
   },
   computed: {
@@ -110,11 +112,18 @@ export default {
         return this.changedShares[idx];
       });
 
+      this.pendingTransactionCount = 0;
+      this.pendingTransactionCount += this.isMessageChanged ? 1 : 0;
+      this.pendingTransactionCount += newShares.length;
+
+      this.transactionStatus = 0;
+
       for(let i = 0; i < newShares.length; i++) {
         // Show loading screen
         this.loading = true;
         needRefresh = true;
         await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.item.address, coinAddress: newShares[i].address, share: newShares[i].share });
+        this.transactionStatus++;
       }
 
       if(this.isMessageChanged) {
@@ -122,6 +131,7 @@ export default {
         this.loading = true;
         needRefresh = true;
         await this.$store.dispatch("contract/setPayeeMessage", { address: this.item.address, message: this.message });
+        this.transactionStatus++;
       }
 
       if(needRefresh) {

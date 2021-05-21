@@ -1,4 +1,7 @@
 <template>
+  <div v-if="loading" class="bg-gray-900 bg-opacity-95 absolute w-full h-full">
+    <p class="relative top-1/3 text-center">Waiting for transaction to be verified.</p>
+  </div>
   <div class="p-4 w-96">
     <div class="text-left pb-4">
       <label for="address" class="font-medium">Address</label>
@@ -24,13 +27,16 @@ export default {
       payeeAddresses: [],
       selfAddress: "",
       errorMessage: "",
-      isAddressValid: false
+      isAddressValid: false,
+      loading: false
     }
   },
   methods: {
     async save() {
+      this.loading = true;
       await this.$store.dispatch("contract/addPayee", { payeeAddress: this.address, alias: this.alias });
       await this.$store.dispatch("contract/getPayees");
+      this.loading = false;
 
       this.$emit("close");
     },

@@ -1,4 +1,7 @@
 <template>
+  <div v-if="loading" class="bg-gray-900 bg-opacity-95 absolute w-full h-full">
+    <p class="relative top-1/3 text-center">Waiting for {{ this.transactionStatus }} / {{ this.pendingTransactionCount }} transactions.</p>
+  </div>
   <div class="p-4 w-96">
     <SearchDropdown placeholder="Search for a Token" :items="tokens" @selected="selectedTokenChanged" />
     <div class="py-2">
@@ -30,7 +33,10 @@ export default {
       tokens: [],
       selectedToken: undefined,
       percentage: 0,
-      percentageLeftForToken: -1
+      percentageLeftForToken: -1,
+      loading: false,
+      pendingTransactionCount: 0,
+      transactionStatus: 0
     }
   },
   computed: {
@@ -61,12 +67,19 @@ export default {
       }
     },
     async save() {
+      this.loading = true;
       let token = this.getToken(this.selectedToken);
+
+      this.pendingTransactionCount = 1;
+      this.pendingTransactionCount += token === null ? 1 : 0;
+
       if(token === null) {
         await this.$store.dispatch("contract/approveToken", { coinAddress: this.selectedToken });
+        this.transactionStatus++;
       }
       await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.payee.address, coinAddress: this.selectedToken, share: this.percentage });        
-      
+      this.transactionStatus++;
+
       await this.$store.dispatch("contract/getApprovedCoins");
       await this.$store.dispatch("contract/getPayees");
       this.$emit("close");

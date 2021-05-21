@@ -4,8 +4,8 @@
       {{ this.$store.state.contract.error }}
     </div>
 
-    <div class="grid grid-cols-3 gap-8">
-      <div class="col-span-2"><PayeeList /></div>
+    <div class="grid grid-cols-2 gap-8">
+      <div class=""><PayeeList /></div>
     </div>
   </div>
 </template>
