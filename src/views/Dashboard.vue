@@ -1,10 +1,12 @@
 <template>
-  <div class="max-w-2xl mx-auto text-center my-12">
+  <div class="max-w-5xl mx-auto text-center my-12">
     <div v-if="this.$store.state.contract.isInitialized === false">
       {{ this.$store.state.contract.error }}
     </div>
 
-    <PayeeList />
+    <div class="grid grid-cols-3 gap-8">
+      <div class="col-span-2"><PayeeList /></div>
+    </div>
   </div>
 </template>
 
@@ -14,7 +16,22 @@ import PayeeList from "@/components/Dashboard/PayeeList/PayeeList.vue";
 export default {
   name: "Dashboard",
   components: {
-    PayeeList
+    PayeeList,
+  },
+  mounted() {
+    // Try to initialize contract.
+    if(!this.$store.state.contract.isInitialized) {
+      let self = this;
+      let intervalHandle = setInterval(async function() {
+        await self.$store.dispatch("contract/initialize");
+        await self.$store.dispatch("contract/getApprovedCoins");
+        await self.$store.dispatch("contract/getPayees");
+
+        if(self.$store.state.contract.isInitialized) {
+          clearInterval(intervalHandle);
+        }
+      }, 1250);
+    }
   }
 }
 </script>
