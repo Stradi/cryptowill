@@ -171,6 +171,32 @@ const confirm = (contractInstance, address, { payerAddress }) => {
   });
 }
 
+const checkWithdrawAvailability = (contractInstance, address, { payerAddress }) => {
+  return new Promise(async (resolve, reject) => {
+    await contractInstance.methods.isPayerAlive(payerAddress).call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(true);
+  });
+}
+
+const withdraw = (contractInstance, address, { payerAddress }) => {
+  return new Promise(async (resolve, reject) => {
+    await contractInstance.withdrawFromPayer(payerAddress).send({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve();
+  })
+}
+
 const getPayeeCount = (contractInstance, address) => {
   return new Promise(async (resolve, reject) => {
     let payeeCount = await contractInstance.methods.getPayeeCount().call({
@@ -249,4 +275,4 @@ const getLeftCoinPercentage = (contractInstance, address, coinAddress) => {
   });
 }
 
-export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare, approveToken, addPayee, confirm };
+export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare, approveToken, addPayee, confirm, checkWithdrawAvailability, withdraw };

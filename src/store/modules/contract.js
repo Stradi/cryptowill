@@ -72,6 +72,12 @@ const actions = {
       commit("setError", { error });
       return;
     });
+  },
+  async withdraw({ commit, state, rootState }, { payerAddress }) {
+    await contract.withdraw(state.instance, rootState.web3.account, { payerAddress }).catch((error) => {
+      commit("setError", { error });
+      return;
+    });
   }
 }
 

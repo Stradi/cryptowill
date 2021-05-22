@@ -7,6 +7,9 @@
     <div class="grid grid-cols-3 gap-8">
       <div class="col-span-2"><PayeeList /></div>
       <div class=""><Confirm /></div>
+      <div></div>
+      <div></div>
+      <div class=""><Withdraw /></div>
     </div>
   </div>
 </template>
@@ -14,12 +17,14 @@
 <script>
 import PayeeList from "@/components/Dashboard/PayeeList/PayeeList.vue";
 import Confirm from "@/components/Dashboard/Confirm/Confirm.vue";
+import Withdraw from "@/components/Dashboard/Withdraw/Withdraw.vue";
 
 export default {
   name: "Dashboard",
   components: {
     PayeeList,
-    Confirm
+    Confirm,
+    Withdraw
   },
   mounted() {
     // Try to initialize contract.
