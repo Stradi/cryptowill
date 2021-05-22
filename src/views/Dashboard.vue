@@ -25,21 +25,6 @@ export default {
     PayeeList,
     Confirm,
     Withdraw
-  },
-  mounted() {
-    // Try to initialize contract.
-    if(!this.$store.state.contract.isInitialized) {
-      let self = this;
-      let intervalHandle = setInterval(async function() {
-        await self.$store.dispatch("contract/initialize");
-        await self.$store.dispatch("contract/getApprovedCoins");
-        await self.$store.dispatch("contract/getPayees");
-
-        if(self.$store.state.contract.isInitialized) {
-          clearInterval(intervalHandle);
-        }
-      }, 1250);
-    }
   }
 }
 </script>

@@ -34,7 +34,12 @@ export default {
   methods: {
     async save() {
       this.loading = true;
-      await this.$store.dispatch("contract/addPayee", { payeeAddress: this.address, alias: this.alias });
+      
+      await this.$store.dispatch("contract/addPayee", {
+        payeeAddress: this.address,
+        alias: this.alias
+      });
+      
       await this.$store.dispatch("contract/getPayees");
       this.loading = false;
 

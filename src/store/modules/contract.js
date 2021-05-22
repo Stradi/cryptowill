@@ -4,79 +4,109 @@ const state = () => ({
   isInitialized: false,
   instance: undefined,
   payees: undefined,
-  approvedCoins: undefined,
-  error: undefined
+  approvedCoins: undefined
 });
 
 const actions = {
-  async initialize({ rootState, commit }) {
-    let instance = await contract.getContract(rootState.web3.networkId).catch((error) => {
-      commit("setError", { error });
-      return;
-    });
+  initialize({ rootState, commit }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.getContract(rootState.web3.networkId).then((contractInstance) => {
+        commit("registerInstance", { instance: contractInstance })
+      }).catch((error) => {
+        reject(error);
+      });
 
-    commit("registerInstance", {
-      instance
+      resolve();
     });
   },
-  async getPayees({ commit, state, rootState }) {
-    let payees = await contract.getPayees(state.instance, rootState.web3.account, state.approvedCoins).catch((error) => {
-      commit("setError", { error });
-      return;
+  getPayees({ commit, state, rootState }) {
+    return new Promise(async (resolve, reject) => {
+      let payees = await contract.getPayees(state.instance, rootState.web3.account, state.approvedCoins).catch((error) => {
+        reject(error);
+        return;
+      });
+  
+      commit("registerPayees", {
+        payees
+      });
+      resolve();
     });
+  },
+  getApprovedCoins({ commit, state, rootState }) {
+    return new Promise(async (resolve, reject) => {
+      let approvedCoins = await contract.getApprovedCoins(state.instance, rootState.web3.account).catch((error) => {
+        reject(error);
+        return;
+      });
+  
+      commit("registerApprovedCoins", {
+        approvedCoins
+      });
+      resolve();
+    });
+  },
+  setPayeeMessage({ state, rootState }, { address, message }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.setPayeeMessage(state.instance, rootState.web3.account, { payeeAddress: address, message }).catch((error) => {
+        reject(error);
+        return;
+      });
 
-    commit("registerPayees", {
-      payees
+      resolve();
     });
   },
-  async getApprovedCoins({ commit, state, rootState }) {
-    let approvedCoins = await contract.getApprovedCoins(state.instance, rootState.web3.account).catch((error) => {
-      commit("setError", { error });
-      return;
-    });
+  setPayeeShare({ state, rootState }, { payeeAddress, coinAddress, share }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.setPayeeShare(state.instance, rootState.web3.account, {
+        payeeAddress,
+        coinAddress,
+        share
+      }).catch((error) => {
+        reject(error);
+        return;
+      });
 
-    commit("registerApprovedCoins", {
-      approvedCoins
+      resolve();
     });
   },
-  async setPayeeMessage({ commit, state, rootState }, { address, message }) {
-    await contract.setPayeeMessage(state.instance, rootState.web3.account, { payeeAddress: address, message }).catch((error) => {
-      commit("setError", { error });
-      return;
+  approveToken({ state, rootState }, { coinAddress }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.approveToken(state.instance, rootState.web3.account, { coinAddress }).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      resolve();
     });
   },
-  async setPayeeShare({ commit, state, rootState }, { payeeAddress, coinAddress, share }) {
-    await contract.setPayeeShare(state.instance, rootState.web3.account, {
-      payeeAddress,
-      coinAddress,
-      share
-    }).catch((error) => {
-      commit("setError", { error });
-      return;
+  addPayee({ state, rootState }, { payeeAddress, alias }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.addPayee(state.instance, rootState.web3.account, { payeeAddress, alias }).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      resolve();
     });
   },
-  async approveToken({ commit, state, rootState }, { coinAddress }) {
-    await contract.approveToken(state.instance, rootState.web3.account, { coinAddress }).catch((error) => {
-      commit("setError", { error });
-      return;
+  confirm({ state, rootState }, { payerAddress }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.confirm(state.instance, rootState.web3.account, { payerAddress }).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      resolve();
     });
   },
-  async addPayee({ commit, state, rootState }, { payeeAddress, alias }) {
-    await contract.addPayee(state.instance, rootState.web3.account, { payeeAddress, alias }).catch((error) => {
-      commit("setError", { error });
-      return;
-    });
-  },
-  async confirm({ commit, state, rootState }, { payerAddress }) {
-    await contract.confirm(state.instance, rootState.web3.account, { payerAddress }).catch((error) => {
-      commit("setError", { error });
-      return;
-    });
-  },
-  async withdraw({ commit, state, rootState }, { payerAddress }) {
-    await contract.withdraw(state.instance, rootState.web3.account, { payerAddress }).catch((error) => {
-      commit("setError", { error });
-      return;
+  withdraw({ state, rootState }, { payerAddress }) {
+    return new Promise(async (resolve, reject) => {
+      await contract.withdraw(state.instance, rootState.web3.account, { payerAddress }).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      resolve();
     });
   }
 }
@@ -91,9 +121,6 @@ const mutations = {
   },
   registerApprovedCoins(state, { approvedCoins }) {
     state.approvedCoins = approvedCoins;
-  },
-  setError(state, { error }) {
-    state.error = error;
   }
 }
 

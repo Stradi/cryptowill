@@ -17,7 +17,6 @@ const getContract = (networkId) => {
 
     let network = NETWORKS[networkId];
     if(network === undefined) {
-      console.log(networkId);
       reject(ERRORS["WEB3_NOT_CONNECTED"]);
       return;
     }

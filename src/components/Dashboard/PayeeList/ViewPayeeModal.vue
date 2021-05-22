@@ -112,6 +112,9 @@ export default {
         return this.changedShares[idx];
       });
 
+      //TODO: Create progress bar like component for displaying
+      //current state of transaction.
+
       this.pendingTransactionCount = 0;
       this.pendingTransactionCount += this.isMessageChanged ? 1 : 0;
       this.pendingTransactionCount += newShares.length;
@@ -122,7 +125,13 @@ export default {
         // Show loading screen
         this.loading = true;
         needRefresh = true;
-        await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.item.address, coinAddress: newShares[i].address, share: newShares[i].share });
+        
+        await this.$store.dispatch("contract/setPayeeShare", {
+          payeeAddress: this.item.address,
+          coinAddress: newShares[i].address,
+          share: newShares[i].share
+        });
+
         this.transactionStatus++;
       }
 
@@ -130,7 +139,12 @@ export default {
         // Show loading screen
         this.loading = true;
         needRefresh = true;
-        await this.$store.dispatch("contract/setPayeeMessage", { address: this.item.address, message: this.message });
+        
+        await this.$store.dispatch("contract/setPayeeMessage", {
+          address: this.item.address,
+          message: this.message
+        });
+        
         this.transactionStatus++;
       }
 

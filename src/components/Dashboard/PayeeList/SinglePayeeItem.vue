@@ -47,12 +47,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  details > summary {
-    list-style: none;
-  }
-  details > summary::-webkit-details-marker {
-    display: none;
-  }
-</style>

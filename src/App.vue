@@ -19,8 +19,17 @@ export default {
     Footer,
     Web3NetworkInfo
   },
-  beforeCreate() {
-    this.$store.dispatch("web3/connect");
+  async beforeCreate() {
+    let promises = [
+      await this.$store.dispatch("web3/connect"),
+      await this.$store.dispatch("contract/initialize"),
+      await this.$store.dispatch("contract/getApprovedCoins"),
+      await this.$store.dispatch("contract/getPayees")
+    ]
+
+    Promise.all(promises).catch((error) => {
+      //Handle error
+    });
   }
 }
 </script>

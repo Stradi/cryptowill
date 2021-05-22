@@ -74,10 +74,19 @@ export default {
       this.pendingTransactionCount += token === null ? 1 : 0;
 
       if(token === null) {
-        await this.$store.dispatch("contract/approveToken", { coinAddress: this.selectedToken });
+        await this.$store.dispatch("contract/approveToken", {
+          coinAddress: this.selectedToken
+        });
+        
         this.transactionStatus++;
       }
-      await this.$store.dispatch("contract/setPayeeShare", { payeeAddress: this.payee.address, coinAddress: this.selectedToken, share: this.percentage });        
+      
+      await this.$store.dispatch("contract/setPayeeShare", {
+        payeeAddress: this.payee.address,
+        coinAddress: this.selectedToken,
+        share: this.percentage
+      });        
+      
       this.transactionStatus++;
 
       await this.$store.dispatch("contract/getApprovedCoins");

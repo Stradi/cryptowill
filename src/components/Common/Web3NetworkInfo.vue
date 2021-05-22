@@ -8,9 +8,6 @@
       <ConnectWeb3Button text="Reconnect" />
     </div>
     <div v-else class="flex justify-between">
-      <div>
-        {{ error }}
-      </div>
       <ConnectWeb3Button text="Connect" />
     </div>
   </div>
