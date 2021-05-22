@@ -1,6 +1,6 @@
 <template>
   <div v-if="loading" class="bg-gray-900 bg-opacity-95 absolute w-full h-full">
-    <p class="relative top-1/3 text-center">Waiting for transaction to be verified.</p>
+    <p class="relative top-1/3 text-center">Waiting for transaction to be confirmed.</p>
   </div>
   <div class="p-4 w-96">
     <div class="text-left pb-4">

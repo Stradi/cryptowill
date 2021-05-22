@@ -66,6 +66,12 @@ const actions = {
       commit("setError", { error });
       return;
     });
+  },
+  async confirm({ commit, state, rootState }, { payerAddress }) {
+    await contract.confirm(state.instance, rootState.web3.account, { payerAddress }).catch((error) => {
+      commit("setError", { error });
+      return;
+    });
   }
 }
 
