@@ -5,67 +5,51 @@ const state = () => ({
   isConnected: false,
   instance: undefined,
   networkId: undefined,
-  account: undefined,
-  error: undefined
+  account: undefined
 });
 
 const actions = {
-  async connect({ state, commit, dispatch }) {
-    //TODO: Delete log message in production.
-    await web3.connect().catch((error) => {
-      commit("setError", { error });
-      return;
-    });
+  connect({ commit }) {
+    return new Promise(async (resolve, reject) => {
+      //TODO: Delete log message in production.
+      let promises = [
+        await web3.connect(),
+        await web3.getInstance(),
+        await web3.getNetworkId(),
+        await web3.getAccount()
+      ];
 
-    await dispatch("registerInstance");
-    await dispatch("registerNetworkId");
-    await dispatch("registerAccount");
+      Promise.all(promises).then((values) => {
+        commit("registerWeb3", {
+          instance: values[1],
+          networkId: values[2],
+          account: values[3]
+        });
 
-    commit("registerIsConnected", {
-      isConnected: true
-    });
-  },
-  async registerInstance({ commit }) {
-    const instance = await web3.getInstance().catch((error) => {
-      commit("setError", { error });
-      return;
-    });
-    
-    commit("registerInstance", { instance });
-  },
-  async registerNetworkId({ state, commit }) {
-    const networkId = await web3.getNetworkId(state.instance).catch((error) => {
-      commit("setError", { error });
-      return;
-    });
-    
-    commit("registerNetworkId", { networkId });
-  },
-  async registerAccount({ state, commit }) {
-    const account = await web3.getAccount(state.instance).catch((error) => {
-      commit("setError", { error });
-      return;
-    });
+        commit("registerIsConnected", {
+          isConnected: true
+        });
+        
+        resolve();
+      }).catch((error) => {
+        commit("registerIsConnected", {
+          isConnected: false
+        });
 
-    commit("registerAccount", { account });
+        reject(error);
+      });
+    });
   }
 }
 
 const mutations = {
-  registerIsConnected(state, { isConnected }) {
-    state.isConnected = isConnected;
-  },
-  registerInstance(state, { instance }) {
-    state.instance = instance;
-  },
-  registerNetworkId(state, { networkId }) {
+  registerWeb3(state, { instance, networkId, account }) {
+    state.insance = instance;
     state.networkId = networkId;
-  },
-  registerAccount(state, { account }) {
     state.account = account;
   },
-  setError(state, { error }) {
-    state.error = error;
+  registerIsConnected(state, { isConnected }) {
+    state.isConnected = isConnected;
   }
 }
 

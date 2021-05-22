@@ -18,6 +18,9 @@ export default {
     NavigationBar,
     Footer,
     Web3NetworkInfo
+  },
+  beforeCreate() {
+    this.$store.dispatch("web3/connect");
   }
 }
 </script>

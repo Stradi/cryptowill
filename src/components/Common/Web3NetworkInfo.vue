@@ -33,13 +33,7 @@ export default {
     },
     explorerUri: function() {
       return this.$store.getters["web3/explorerUri"];
-    },
-    error: function() {
-      return this.$store.state.web3.error;
     }
-  },
-  beforeMount() {
-    this.$store.dispatch("web3/connect");
   }
 }
 </script>

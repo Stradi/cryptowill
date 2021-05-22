@@ -6,17 +6,21 @@ const ERRORS = {
   "WEB3_NO_NETWORK_ID": "Could not get network id."
 }
 
-const connect = () => {
+const getInstance = () => {
   return new Promise(async (resolve, reject) => {
     let web3 = window.ethereum;
     if(web3 === undefined) {
       reject(ERRORS["WEB3_NO_PROVIDER"]);
       return;
     }
+    
+    resolve(new Web3(web3));
+  });
+}
 
-    const response = await web3.request({
-      method: "eth_requestAccounts"
-    }).catch((error) => {
+const connect = () => {
+  return new Promise(async (resolve, reject) => {
+    const response = await window.ethereum.request({ method: "eth_requestAccounts" }).catch((error) => {
       reject(ERRORS["WEB3_ACCESS_DECLINED"]);
       return;
     });
@@ -30,34 +34,24 @@ const connect = () => {
   });
 };
 
-const getInstance = () => {
+const getNetworkId = async () => {
   return new Promise(async (resolve, reject) => {
-    let web3 = window.ethereum;
-    if(web3 === undefined) {
-      reject(ERRORS["WEB3_NO_PROVIDER"]);
-      return;
-    }
-
-    resolve(new Web3(web3));
-  });
-}
-
-const getNetworkId = async (instance) => {
-  return new Promise(async (resolve, reject) => {
+    let instance = await getInstance().catch((error) => { reject(error); return; });
     const networkId = await instance.eth.net.getId().catch((error) => {
       reject(ERRORS["WEB3_NO_NETWORK_ID"]);
       return;
     });
-
+    
     resolve(networkId);
   });
 }
 
-const getAccount = async (instance) => {
+const getAccount = async () => {
   return new Promise(async (resolve, reject) => {
+    let instance = await getInstance().catch((error) => { reject(error); return; });
     const accounts = await instance.eth.getAccounts().catch((error) => {
-      reject(ERRORS["WEB3_ACCESS_DECLINED"]);
-      return;
+      reject(ERRORS["WEB3_ACCESS_DECLINED"]); 
+      return; 
     });
 
     if(accounts.length === 0) {
