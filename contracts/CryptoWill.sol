@@ -6,6 +6,7 @@ import "./IERC20.sol";
 
 contract CryptoWill is Ownable {
     event PayeeAdded(address indexed _payer, address indexed _payee);
+    event PayeeNameChanged(address indexed _payer, address indexed _payee, string _newName);
     event PayeeShareChanged(address indexed _payer, address indexed _payee, address indexed _coin, uint256 _newPercentage);
     event PayeeMessageChanged(address indexed _payer, address indexed _payee, string _newMessage);
     event PayeeConfirmation(address indexed _payer, address indexed _payee);
@@ -18,6 +19,7 @@ contract CryptoWill is Ownable {
         bool isConfirmed;
         bool isWithdrawed;
         address self;
+        string name;
         // Coin address to percentage
         mapping(address => uint256) shares;
         string message;
@@ -31,8 +33,6 @@ contract CryptoWill is Ownable {
 
     mapping(address => mapping(address => uint256)) public payeeToPayerID;
 
-    mapping(address => mapping(address => uint256)) public coinToCoinID;
-    
     // TODO: Add withdraw timer. If msg.sender has some payee's but payee's confirms the confirmDeath
     // then payee's can't withdraw money. Fraud prevention?
     
@@ -46,21 +46,8 @@ contract CryptoWill is Ownable {
         _;
     }
     
-    function approveToken(address _coinAddress) alive public {
-        require(coinToCoinID[msg.sender][_coinAddress] == 0, "coin already approved");
-        IERC20 token = IERC20(_coinAddress);
-        
-        // Maximum value of uint256 is 2**256 - 1
-        bool status = token.approve(msg.sender, 2**256 - 1);
-        if(status) {
-            uint256 idx = payerToApprovedCoins[msg.sender].length;
-            payerToApprovedCoins[msg.sender].push(_coinAddress);
-            coinToCoinID[msg.sender][_coinAddress] = idx;
-        }
-    }
-    
     //TODO: Make this function payable.
-    function addPayee(address _payeeAddress) alive public {
+    function addPayee(address _payeeAddress, string memory name) alive public {
         require(payeeToPayerID[_payeeAddress][msg.sender] == 0, "already a payee");
         require(_payeeAddress != msg.sender, "can't add self payee");
         
@@ -69,6 +56,7 @@ contract CryptoWill is Ownable {
         
         Payee storage payee = payerToPayee[msg.sender][idx];
         payee.self = _payeeAddress;
+        payee.name = name;
         payee.isConfirmed = false;
         payee.isWithdrawed = false;
         
@@ -77,11 +65,20 @@ contract CryptoWill is Ownable {
         emit PayeeAdded(msg.sender, _payeeAddress);
     }
     
+    function setNameOfPayee(address _payeeAddress, string memory _newName) alive public {
+        uint256 payeeId = payeeToPayerID[_payeeAddress][msg.sender];
+        Payee storage payeeObject = payerToPayee[msg.sender][payeeId - 1];
+        
+        require(payeeId > 0, "not a payee");
+        require(_payeeAddress == payeeObject.self, "payeeAddress mismatch");
+        
+        payeeObject.name = _newName;
+        
+        emit PayeeNameChanged(msg.sender, _payeeAddress, _newName);
+    }
+    
     //TODO: Handle approving before setting share.
     function setShareOfPayee(address _payeeAddress, address _coinAddress, uint256 _percentage) alive public {
-        uint256 coinId = coinToCoinID[msg.sender][_coinAddress];
-        require(payerToApprovedCoins[msg.sender][coinId] != address(0), "token not approved");
-        
         uint256 payeeId = payeeToPayerID[_payeeAddress][msg.sender];
         Payee storage payeeObject = payerToPayee[msg.sender][payeeId - 1];
         
@@ -96,6 +93,10 @@ contract CryptoWill is Ownable {
         
         require(_coinAddress != address(0), "coin address is not valid");
         require(_payeeAddress != msg.sender, "can't add self payee");
+
+        if(!isPayerApprovedCoin(msg.sender, _coinAddress)) {
+            setCoinApproved(_coinAddress);
+        }
         
         uint256 currentCoinPercentage = payerToCoinPercentage[msg.sender][_coinAddress];
         
@@ -121,8 +122,8 @@ contract CryptoWill is Ownable {
     }
     
     function confirm(address _payer) onlyPayeeOf(_payer) public {
-        uint256 payeeId = payeeToPayerID[_payer][msg.sender];
-        Payee storage payeeObject = payerToPayee[msg.sender][payeeId - 1];
+        uint256 payeeId = payeeToPayerID[msg.sender][_payer];
+        Payee storage payeeObject = payerToPayee[_payer][payeeId - 1];
         
         require(payeeObject.isConfirmed == false, "already confirmed");
         
@@ -131,7 +132,7 @@ contract CryptoWill is Ownable {
         
         emit PayeeConfirmation(_payer, msg.sender);
         
-        if(isPayerAlive(_payer) && !payerToRIP[_payer]) {
+        if(!isPayerAlive(_payer) && !payerToRIP[_payer]) {
             // Rest in Piece, Payer... You will be remembered.
             payerToRIP[_payer] = true;
             emit PayerDeathConfirmed(_payer);
@@ -140,11 +141,11 @@ contract CryptoWill is Ownable {
     
     function withdrawFromPayer(address _payer) onlyPayeeOf(_payer) public {
         uint256 payeeId = payeeToPayerID[msg.sender][_payer];
-        Payee storage payeeObject = payerToPayee[msg.sender][payeeId - 1];
+        Payee storage payeeObject = payerToPayee[_payer][payeeId - 1];
         
         require(payerToRIP[_payer], "payer is alive");
         require(!payeeObject.isWithdrawed, "already withdrawed");
-        
+            
         uint256 approvedCoinCount = payerToApprovedCoins[_payer].length;
         for(uint256 coin = 0; coin < approvedCoinCount; coin++) {
             address tokenAddress = payerToApprovedCoins[_payer][coin];
@@ -156,25 +157,41 @@ contract CryptoWill is Ownable {
                 payeeObject.isWithdrawed = true;
                 
                 uint256 amountToTransfer = (balanceOfToken * shareOfPayee) / 100;
-                token.transferFrom(_payer, payeeObject.self, amountToTransfer);
+                token.transferFrom(_payer, msg.sender, amountToTransfer);
                 
                 emit TransferredToPayee(_payer, payeeObject.self, tokenAddress, amountToTransfer);
             }
         }
     }
     
+    function setCoinApproved(address _coinAddress) public {
+        if(!isPayerApprovedCoin(msg.sender, _coinAddress)) {
+            payerToApprovedCoins[msg.sender].push(_coinAddress);
+        }
+    }
+    
     //TODO: Special case for payeeCount < 3.
-    function isPayerAlive(address _payer) onlyPayeeOf(_payer) public view returns(bool) {
-        uint256 payeeCount = getPayeeCount();
+    function isPayerAlive(address _payer) public view returns(bool) {
+        uint256 payeeCount = getPayeeCount(_payer);
         uint256 confirmationCount = payerToConfirmationCount[_payer];
         
         // little trick due to lack of floating points
         uint256 ratio = confirmationCount * 10 / payeeCount;
-        return ratio >= 5;
+        return !(ratio >= 5);
     }
     
-    function getPayeeCount() public view returns(uint256) {
-        return payerToPayee[msg.sender].length;
+    function isPayerApprovedCoin(address _payer, address _coinAddress) public view returns(bool) {
+        for(uint256 i = 0; i < payerToApprovedCoins[_payer].length; i++) {
+           if(payerToApprovedCoins[msg.sender][i] == _coinAddress) {
+               return true;
+           }
+        }
+        
+        return false;
+    }
+    
+    function getPayeeCount(address _payer) public view returns(uint256) {
+        return payerToPayee[_payer].length;
     }
     
     function getApprovedCoinCount() public view returns(uint256) {

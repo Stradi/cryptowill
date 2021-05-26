@@ -1,7 +1,10 @@
 import contractAbi from "@/../contracts/CryptoWill.json";
+import erc20Abi from "@/../contracts/ERC20.json";
 
 import web3 from "@/utils/web3.js";
 import { NETWORKS } from "@/utils/networks.js";
+
+import web3js from "web3";
 
 const ERRORS = {
   "WEB3_NOT_CONNECTED": "Not connected to Web3 provider.",
@@ -131,19 +134,6 @@ const setPayeeShare = (contractInstance, address, { payeeAddress, coinAddress, s
   });
 }
 
-const approveToken = (contractInstance, address, { coinAddress }) => {
-  return new Promise(async (resolve, reject) => {
-    await contractInstance.methods.approveToken(coinAddress).send({
-      from: address
-    }).catch((error) => {
-      reject(error);
-      return;
-    });
-
-    resolve();
-  });
-}
-
 const addPayee = (contractInstance, address, { payeeAddress, alias }) => {
   return new Promise(async (resolve, reject) => {
     await contractInstance.methods.addPayee(payeeAddress, alias).send({
@@ -185,7 +175,7 @@ const checkWithdrawAvailability = (contractInstance, address, { payerAddress }) 
 
 const withdraw = (contractInstance, address, { payerAddress }) => {
   return new Promise(async (resolve, reject) => {
-    await contractInstance.withdrawFromPayer(payerAddress).send({
+    await contractInstance.methods.withdrawFromPayer(payerAddress).send({
       from: address
     }).catch((error) => {
       reject(error);
@@ -196,9 +186,37 @@ const withdraw = (contractInstance, address, { payerAddress }) => {
   })
 }
 
+const approveToken = (contractInstance, address, { coinAddress, networkId }) => {
+  return new Promise(async (resolve, reject) => {
+    let web3Instance = await web3.getInstance().catch((error) => { 
+      reject(error);
+      return;
+    });
+
+
+    let contract = new web3Instance.eth.Contract(erc20Abi, coinAddress);
+    if(contract === undefined) {
+      reject("Could not approve token.");
+      return;
+    }
+
+    let contractAddress = NETWORKS[networkId].contractAddress;
+
+    let BN = web3js.utils.BN;
+    await contract.methods.approve(contractAddress, new BN("2").pow(new BN("256")).sub(new BN("1"))).send({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve();
+  });
+}
+
 const getPayeeCount = (contractInstance, address) => {
   return new Promise(async (resolve, reject) => {
-    let payeeCount = await contractInstance.methods.getPayeeCount().call({
+    let payeeCount = await contractInstance.methods.getPayeeCount(address).call({
       from: address
     }).catch((error) => {
       reject(error);
@@ -274,4 +292,4 @@ const getLeftCoinPercentage = (contractInstance, address, coinAddress) => {
   });
 }
 
-export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare, approveToken, addPayee, confirm, checkWithdrawAvailability, withdraw };
+export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare, addPayee, confirm, checkWithdrawAvailability, withdraw, approveToken };

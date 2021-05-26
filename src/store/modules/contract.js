@@ -71,7 +71,7 @@ const actions = {
   },
   approveToken({ state, rootState }, { coinAddress }) {
     return new Promise(async (resolve, reject) => {
-      await contract.approveToken(state.instance, rootState.web3.account, { coinAddress }).catch((error) => {
+      await contract.approveToken(state.instance, rootState.web3.account, { coinAddress, networkId: rootState.web3.networkId }).catch((error) => {
         reject(error);
         return;
       });
