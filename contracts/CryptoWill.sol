@@ -32,6 +32,7 @@ contract CryptoWill is Ownable {
     mapping(address => address[]) public payerToApprovedCoins;
 
     mapping(address => mapping(address => uint256)) public payeeToPayerID;
+    mapping(address => address[]) public payeeToPayer;
 
     // TODO: Add withdraw timer. If msg.sender has some payee's but payee's confirms the confirmDeath
     // then payee's can't withdraw money. Fraud prevention?
@@ -50,6 +51,8 @@ contract CryptoWill is Ownable {
     function addPayee(address _payeeAddress, string memory name) alive public {
         require(payeeToPayerID[_payeeAddress][msg.sender] == 0, "already a payee");
         require(_payeeAddress != msg.sender, "can't add self payee");
+        
+        payeeToPayer[_payeeAddress].push(msg.sender);
         
         uint256 idx = payerToPayee[msg.sender].length;
         payerToPayee[msg.sender].push();
@@ -192,6 +195,10 @@ contract CryptoWill is Ownable {
     
     function getPayeeCount(address _payer) public view returns(uint256) {
         return payerToPayee[_payer].length;
+    }
+    
+    function getPayerCount(address _payee) public view returns(uint256) {
+        return payeeToPayer[_payee].length;
     }
     
     function getApprovedCoinCount() public view returns(uint256) {
