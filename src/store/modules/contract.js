@@ -4,6 +4,7 @@ const state = () => ({
   isInitialized: false,
   instance: undefined,
   payees: undefined,
+  payers: undefined,
   approvedCoins: undefined
 });
 
@@ -28,6 +29,19 @@ const actions = {
   
       commit("registerPayees", {
         payees
+      });
+      resolve();
+    });
+  },
+  getPayers({ commit, state, rootState }) {
+    return new Promise(async (resolve, reject) => {
+      let payers = await contract.getPayers(state.instance, rootState.web3.account).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      commit("registerPayers", {
+        payers
       });
       resolve();
     });
@@ -118,6 +132,9 @@ const mutations = {
   },
   registerPayees(state, { payees }) {
     state.payees = payees;
+  },
+  registerPayers(state, { payers }) {
+    state.payers = payers;
   },
   registerApprovedCoins(state, { approvedCoins }) {
     state.approvedCoins = approvedCoins;

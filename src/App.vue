@@ -24,7 +24,8 @@ export default {
       await this.$store.dispatch("web3/connect"),
       await this.$store.dispatch("contract/initialize"),
       await this.$store.dispatch("contract/getApprovedCoins"),
-      await this.$store.dispatch("contract/getPayees")
+      await this.$store.dispatch("contract/getPayees"),
+      await this.$store.dispatch("contract/getPayers")
     ]
 
     Promise.all(promises).catch((error) => {

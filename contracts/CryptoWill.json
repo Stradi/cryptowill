@@ -304,6 +304,25 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "_payee",
+				"type": "address"
+			}
+		],
+		"name": "getPayerCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "_payer",
 				"type": "address"
 			}
@@ -346,6 +365,30 @@
 	{
 		"inputs": [],
 		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "payeeToPayer",
 		"outputs": [
 			{
 				"internalType": "address",

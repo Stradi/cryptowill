@@ -79,6 +79,31 @@ const getPayees = (contractInstance, address, approvedCoins) => {
   });
 }
 
+const getPayers = (contractInstance, address) => {
+  return new Promise(async (resolve, reject) => {
+    let payerCount = await getPayerCount(contractInstance, address).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    let payers = [];
+    for(let i = 0; i < payerCount; i++) {
+      let payer = await contractInstance.methods.payeeToPayer(address, i).call({
+        from: address
+      }).catch((error) => {
+        reject(error);
+        return;
+      });
+
+      payers.push({
+        address: payer
+      });
+    }
+    
+    resolve(payers);
+  });
+}
+
 const getApprovedCoins = (contractInstance, address) => {
   return new Promise(async (resolve, reject) => {
     let approvedCoinCount = await getApprovedCoinCount(contractInstance, address).catch((error) => {
@@ -240,6 +265,19 @@ const getPayeeWithIndex = (contractInstance, address, payeeIndex) => {
   });
 }
 
+const getPayerCount = (contractInstance, address) => {
+  return new Promise(async (resolve, reject) => {
+    let payerCount = await contractInstance.methods.getPayerCount(address).call({
+      from: address
+    }).catch((error) => {
+      reject(error);
+      return;
+    });
+
+    resolve(payerCount);
+  });
+}
+
 const getApprovedCoinCount = (contractInstance, address) => {
   return new Promise(async (resolve, reject) => {
     let coinCount = contractInstance.methods.getApprovedCoinCount().call({
@@ -292,4 +330,4 @@ const getLeftCoinPercentage = (contractInstance, address, coinAddress) => {
   });
 }
 
-export default { getContract, getPayees, getApprovedCoins, setPayeeMessage, setPayeeShare, addPayee, confirm, checkWithdrawAvailability, withdraw, approveToken };
+export default { getContract, getPayees, getPayers, getApprovedCoins, setPayeeMessage, setPayeeShare, addPayee, confirm, checkWithdrawAvailability, withdraw, approveToken };
