@@ -33,6 +33,10 @@ export default {
   },
   methods: {
     async save() {
+      if(!this.isAddressValid || this.alias === '') {
+        return;
+      }
+
       this.loading = true;
       
       await this.$store.dispatch("contract/addPayee", {

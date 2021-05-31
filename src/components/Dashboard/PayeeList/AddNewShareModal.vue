@@ -67,6 +67,10 @@ export default {
       }
     },
     async save() {
+      if(!this.isPercentageSet || !this.isTokenSelected) {
+        return;
+      }
+
       this.loading = true;
       this.pendingTransactionCount = 1;
       

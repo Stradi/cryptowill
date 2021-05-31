@@ -39,6 +39,9 @@ export default {
       });
     },
     async confirm() {
+      if(!this.isAddressValid) {
+        return;
+      }
       this.loading = true;
       await this.$store.dispatch("contract/confirm", {
         payerAddress: this.address

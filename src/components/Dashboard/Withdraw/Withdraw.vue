@@ -41,6 +41,9 @@ export default {
       });
     },
     async withdraw() {
+      if(!this.isAddressValid) {
+        return;
+      }
       this.loading = true;
       if(this.canWithdraw) {
         await this.$store.dispatch("contract/withdraw", {

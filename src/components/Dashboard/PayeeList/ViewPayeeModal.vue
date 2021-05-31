@@ -107,6 +107,10 @@ export default {
       return Math.min(Math.max(val, min), max);
     },
     async save() {
+      if(!this.isAnythingChanged) {
+        return;
+      }
+
       let needRefresh = false;
       let newShares = this.shares.filter((item, idx) => {
         return this.changedShares[idx];
@@ -183,27 +187,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  input[type=range] {
-    -webkit-appearance: none;
-    overflow: hidden;
-    width: 100%;
-    background: transparent;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    @apply w-4;
-    @apply h-4;
-    margin-top: 0px;
-    @apply appearance-none;
-    @apply bg-gray-800;
-    box-shadow: -300px 0 0 300px #A3A3A3;
-  }
-
-  input[type=range]::-webkit-slider-runnable-track {
-    @apply w-full;
-    @apply h-4;
-    @apply bg-gray-500;
-  }
-</style>
