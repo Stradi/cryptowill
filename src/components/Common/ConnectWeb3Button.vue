@@ -7,8 +7,12 @@ export default {
   name: "ConnectWeb3Button",
   props: ["text"],
   methods: {
-    connect() {
-      this.$store.dispatch("web3/connect");
+    async connect() {
+      await this.$store.dispatch("web3/connect");
+      await this.$store.dispatch("contract/initialize"),
+      await this.$store.dispatch("contract/getApprovedCoins"),
+      await this.$store.dispatch("contract/getPayees"),
+      await this.$store.dispatch("contract/getPayers")
     }
   }
 }

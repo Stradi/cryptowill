@@ -11,6 +11,8 @@ const state = () => ({
 const actions = {
   initialize({ rootState, commit }) {
     return new Promise(async (resolve, reject) => {
+      commit("clearState");
+
       await contract.getContract(rootState.web3.networkId).then((contractInstance) => {
         commit("registerInstance", { instance: contractInstance })
       }).catch((error) => {
@@ -126,6 +128,13 @@ const actions = {
 }
 
 const mutations = {
+  clearState(state) {
+    state.isInitialized = false,
+    state.instance = undefined,
+    state.payees = undefined,
+    state.payers = undefined,
+    state.approvedCoins = undefined
+  },
   registerInstance(state, { instance }) {
     state.instance = instance;
     state.isInitialized = true;
