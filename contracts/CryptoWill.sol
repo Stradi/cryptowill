@@ -11,6 +11,7 @@ contract CryptoWill is Ownable {
     event PayeeMessageChanged(address indexed _payer, address indexed _payee, string _newMessage);
     event PayeeConfirmation(address indexed _payer, address indexed _payee);
     event PayerDeathConfirmed(address indexed _payer);
+    event PayerRevertedConfirmation(address indexed _payer);
     
     event TransferredToPayee(address indexed _payer, address indexed _payee, address indexed _coin, uint256 _amount);
     event DistributionCompleted(address indexed _payer);
@@ -25,11 +26,14 @@ contract CryptoWill is Ownable {
         string message;
     }
     
+    uint256 TIME_AFTER_DEATH = 3 minutes;
+    
     mapping(address => bool) public payerToRIP;
     mapping(address => Payee[]) public payerToPayee;
     mapping(address => mapping(address => uint256)) public payerToCoinPercentage;
     mapping(address => uint256) public payerToConfirmationCount;
     mapping(address => address[]) public payerToApprovedCoins;
+    mapping(address => uint256) public payerToDeathTime;
 
     mapping(address => mapping(address => uint256)) public payeeToPayerID;
     mapping(address => address[]) public payeeToPayer;
@@ -137,6 +141,7 @@ contract CryptoWill is Ownable {
         
         if(!isPayerAlive(_payer) && !payerToRIP[_payer]) {
             // Rest in Piece, Payer... You will be remembered.
+            payerToDeathTime[_payer] = block.timestamp;
             payerToRIP[_payer] = true;
             emit PayerDeathConfirmed(_payer);
         }
@@ -146,6 +151,7 @@ contract CryptoWill is Ownable {
         uint256 payeeId = payeeToPayerID[msg.sender][_payer];
         Payee storage payeeObject = payerToPayee[_payer][payeeId - 1];
         
+        require(payerToDeathTime[_payer] + TIME_AFTER_DEATH < block.timestamp, "need to wait 30 days");
         require(payerToRIP[_payer], "payer is alive");
         require(!payeeObject.isWithdrawed, "already withdrawed");
             
@@ -173,6 +179,37 @@ contract CryptoWill is Ownable {
         }
     }
     
+    function revertConfirm() public {
+        require(payerToPayee[msg.sender].length > 0, "no payees added");
+        require(payerToConfirmationCount[msg.sender] > 0, "no confirmation");
+        require(payerToDeathTime[msg.sender] + TIME_AFTER_DEATH > block.timestamp, "already dead");
+        
+        payerToRIP[msg.sender] = false;
+        payerToConfirmationCount[msg.sender] = 0;
+        
+        for(uint256 i = 0; i < payerToApprovedCoins[msg.sender].length; i++) {
+            address coinAddress = payerToApprovedCoins[msg.sender][i];
+            payerToCoinPercentage[msg.sender][coinAddress] = 0;
+        }
+        delete payerToApprovedCoins[msg.sender];
+        
+        for(uint256 i = 0; i < payerToPayee[msg.sender].length; i++) {
+            address payeeAddress = payerToPayee[msg.sender][i].self;
+            payeeToPayerID[payeeAddress][msg.sender] = 0;
+
+            for(uint256 j = 0; j < payeeToPayer[payeeAddress].length; j++) {
+                if(payeeToPayer[payeeAddress][j] == msg.sender) {
+                    payeeToPayer[payeeAddress][j] = payeeToPayer[payeeAddress][payeeToPayer[payeeAddress].length - 1];
+                    payeeToPayer[payeeAddress].pop();
+                    break;
+                }
+            }
+        }
+        delete payerToPayee[msg.sender];
+        
+        emit PayerRevertedConfirmation(msg.sender);
+    }
+    
     //TODO: Special case for payeeCount < 3.
     function isPayerAlive(address _payer) public view returns(bool) {
         uint256 payeeCount = getPayeeCount(_payer);
@@ -191,6 +228,27 @@ contract CryptoWill is Ownable {
         }
         
         return false;
+    }
+    
+    function canWithdraw(address _payer) public view returns(bool) {
+        if(isPayerAlive(_payer)) {
+            return false;
+        }
+        
+        if(!payerToRIP[_payer]) {
+            return false;
+        }
+        
+        if(payerToDeathTime[_payer] + TIME_AFTER_DEATH > block.timestamp) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function estimatedTimeToWithdraw(address _payer) public view returns(uint256) {
+        require(payerToRIP[_payer], "payer is still alive");
+        return payerToDeathTime[_payer] + TIME_AFTER_DEATH;
     }
     
     function getPayeeCount(address _payer) public view returns(uint256) {

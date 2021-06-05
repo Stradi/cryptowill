@@ -10,6 +10,7 @@
         <input v-model="address" type="text" name="withdrawAddress" id="withdrawAddress" :disabled="!this.$store.state.contract.isInitialized" placeholder="0x0000000000000000000000000000000000000000" @input="onAddressChange" :class="isAddressValid ? 'ring-yellow-500' : address == '' ? '' : 'ring-red-600'" class="ring-2 ring-transparent mt-1 p-2 text-black rounded-2xl w-full outline-none">
       </div>
       {{ this.errorMessage }}
+      {{ this.estimatedWithdrawDate }}
       <a href="#" @click="withdraw" :class="!this.isAddressValid ? 'hover:cursor-not-allowed hover:bg-yellow-800 bg-yellow-800' : ''" class="block text-center font-medium p-2 rounded-3xl bg-yellow-600 text-white transition ease-out duration-200 hover:bg-yellow-500">{{ this.canWithdraw ? "Withdraw" : "Check availability" }}</a>
     </div>
   </div>
@@ -27,7 +28,8 @@ export default {
       errorMessage: "",
       isAddressValid: false,
       loading: false,
-      canWithdraw: false
+      canWithdraw: false,
+      estimatedWithdrawDate: ""
     }
   },
   methods: {
@@ -50,15 +52,50 @@ export default {
           payerAddress: this.address
         });
       } else {
-        contract.checkWithdrawAvailability(this.$store.state.contract.instance, this.$store.state.web3.account, {
+        let canWithdraw = await contract.canWithdraw(this.$store.state.contract.instance, this.$store.state.web3.account, {
           payerAddress: this.address
-        }).then(() => {
-          this.canWithdraw = true;
-        }).catch(() => {
-          this.canWithdraw = false;
         });
+
+        let estimatedWithdrawDate = await contract.estimatedTimeToWithdraw(this.$store.state.contract.instance, this.$store.state.web3.account, {
+          payerAddress: this.address
+        });
+
+        let currentDate = new Date();
+
+        if(canWithdraw && estimatedWithdrawDate < currentDate) {
+          this.canWithdraw = true;
+        } else {
+          this.canWithdraw = false;
+          this.estimatedWithdrawDate = "Time to withdraw: " + this.getEstimatedTimeStr(estimatedWithdrawDate, currentDate);
+        }
       }
       this.loading = false;
+    },
+    getEstimatedTimeStr(estimatedWithdrawDate, currentDate) {
+      let str = "";
+      let delta = (estimatedWithdrawDate - currentDate) / 1000; //secs
+      let days = Math.floor(delta / 86400);
+      delta -= days * 86400;
+
+      let hours = Math.floor(delta / 3600) % 24;
+      delta -= hours * 3600;
+
+      let mins = Math.floor(delta / 60) % 60;
+      delta -= mins * 60;
+
+      if(days !== 0) {
+        str += days + " days";
+      }
+
+      if(hours !== 0) {
+        str += hours + " hours";
+      }
+
+      if(mins !== 0) {
+        str += mins + " mins";
+      }
+
+      return str;
     }
   }
 }
