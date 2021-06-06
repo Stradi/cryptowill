@@ -21,12 +21,11 @@ In **Detailed view of Payee** window, you will see a text box field for message.
 Removing payee is not possible. Because of that, you have to be careful when you add a new payee. Always **double check** the address field when adding a payee.
 
 ## How Crypto Will knows a payer is dead?
-A payee can use **Confirm Death** panel in order to confirm a payer is dead. If **50%** of payee's of payer confirms death, then Crypto Will will wait **60 days** in order to prevent fraud. In 60 days, a payer can always confirms that he/she is not dead. If payer does not confirms he/she is not dead, Crypto Will will change it's state to dead state and his/her payee's can withdraw the shares using **Withdraw Funds** panel.
+A payee can use **Confirm Death** panel in order to confirm a payer is dead. If **50%** of payee's of payer confirms death, then Crypto Will will wait **60 days** in order to prevent fraud. In 60 days, a payer can always confirms that he/she is not dead. When payer confirms that he/she is not dead, all the current payees are removed. If payer does not confirms he/she is not dead, Crypto Will will change it's state to dead state and his/her payee's can withdraw the shares using **Withdraw Funds** panel.
 
 Adding payee should be done carefully, if a payer added too many wrong payee's, 50% of his/her payee's is going to be many and if it's done too many times, withdrawing funds is going to be impossible (unless payee's find each other).
 
 ## Terms
-
 - **Share**: A part of cryptocurrency that is going to divided between payees.
 - **Payee**: A person who will get paid.
 - **Payer**: A person who will pay to his/her payee's.

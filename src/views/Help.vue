@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-3xl mx-auto">
     <p v-html="html" class="unreset my-8"></p>
   </div>
 </template>

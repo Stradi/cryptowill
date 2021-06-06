@@ -14,7 +14,7 @@
 		],
 		"name": "addPayee",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -224,6 +224,19 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "_newCost",
+				"type": "uint256"
+			}
+		],
+		"name": "setAddPayeeCost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "_coinAddress",
 				"type": "address"
@@ -336,6 +349,13 @@
 		],
 		"name": "TransferredToPayee",
 		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawDevFees",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [

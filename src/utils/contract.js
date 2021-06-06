@@ -162,7 +162,8 @@ const setPayeeShare = (contractInstance, address, { payeeAddress, coinAddress, s
 const addPayee = (contractInstance, address, { payeeAddress, alias }) => {
   return new Promise(async (resolve, reject) => {
     await contractInstance.methods.addPayee(payeeAddress, alias).send({
-      from: address
+      from: address,
+      value: web3js.utils.toWei("0.1", "ether")
     }).catch((error) => {
       reject(error);
       return;

@@ -26,6 +26,7 @@ contract CryptoWill is Ownable {
         string message;
     }
     
+    uint256 ADD_PAYEE_COST = 0.1 ether;
     uint256 TIME_AFTER_DEATH = 3 minutes;
     
     mapping(address => bool) public payerToRIP;
@@ -52,7 +53,8 @@ contract CryptoWill is Ownable {
     }
     
     //TODO: Make this function payable.
-    function addPayee(address _payeeAddress, string memory name) alive public {
+    function addPayee(address _payeeAddress, string memory name) payable alive public {
+        require(msg.value >= ADD_PAYEE_COST, "insufficent value");
         require(payeeToPayerID[_payeeAddress][msg.sender] == 0, "already a payee");
         require(_payeeAddress != msg.sender, "can't add self payee");
         
@@ -275,5 +277,13 @@ contract CryptoWill is Ownable {
         require(payeeId > 0, "not a payee");
         
         return payeeObject.shares[_coinAddress];
+    }
+    
+    function withdrawDevFees() onlyOwner public {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+    
+    function setAddPayeeCost(uint256 _newCost) onlyOwner public {
+        ADD_PAYEE_COST = _newCost;
     }
 }
