@@ -4,12 +4,12 @@
   </div>
   <div class="px-4 py-2">
     <div>
-      <p><span class="font-medium">Alias:</span> {{ item.alias || "Charmander" }}</p>
-      <p><span class="font-medium">Address:</span> {{ item.address }}</p>
+      <p class="truncate"><span class="font-medium">Alias:</span> {{ item.alias || "Charmander" }}</p>
+      <p class="truncate"><span class="font-medium">Address:</span>{{ item.address }}</p>
     </div>
     <div class="mb-2">
       <label for="message" class="font-medium block pb-2">Message:</label>
-      <textarea v-model="message" id="message" name="message" rows="4" cols="70" :placeholder="placeholder" :class="isMessageChanged ? 'ring-2 ring-yellow-500' : ''" class="text-black p-2 rounded-2xl focus:outline-none resize-none"></textarea>
+      <textarea v-model="message" id="message" name="message" rows="4" cols="70" :placeholder="placeholder" :class="isMessageChanged ? 'ring-2 ring-yellow-500' : ''" class="text-black p-2 rounded-2xl focus:outline-none resize-none w-full"></textarea>
       <div class="flex justify-between py-2">
         <p for="shares" class="font-medium">Shares</p>
         <a href="#" @click="isAddNewShareModalEnabled = true" class="font-medium text-yellow-500 transition ease-out duration-200 hover:text-yellow-400">Add new share</a>

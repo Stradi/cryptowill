@@ -2,11 +2,11 @@
   <div v-if="loading" class="bg-gray-900 bg-opacity-95 absolute w-full h-full">
     <p class="relative top-1/3 text-center">Waiting for {{ this.transactionStatus }} / {{ this.pendingTransactionCount }} transactions.</p>
   </div>
-  <div class="p-4 w-96">
+  <div class="p-4">
     <SearchDropdown placeholder="Search for a Token" :items="tokens" @selected="selectedTokenChanged" />
     <div class="py-2">
       <label>Percentage</label>
-      <div>
+      <div class="w-64">
         <input v-model.number="percentage" type="range" :disabled="!this.selectedToken" min="0" :max="this.percentageLeftForToken" :class="isPercentageSet ? 'ring-2 ring-yellow-500' : ''">
         <p v-if="this.percentageLeftForToken !== 0" class="text-center">%{{ percentage }}</p>
         <p v-else class="text-center">No share left for this token.</p>

@@ -2,7 +2,7 @@
   <div v-if="loading" class="bg-gray-900 bg-opacity-95 absolute w-full h-full">
     <p class="relative top-1/3 text-center">Waiting for transaction to be confirmed.</p>
   </div>
-  <div class="p-4 w-96">
+  <div class="p-4 w-80">
     <div class="text-left pb-4">
       <label for="address" class="font-medium">Address</label>
       <input v-model="address" name="address" id="address" type="text" placeholder="0x0000000000000000000000000000000000000000" @input="onAddressChange" :class="isAddressValid ? 'ring-yellow-500' : address == '' ? '' : 'ring-red-600'" class="ring-2 ring-transparent mt-1 p-2 text-black rounded-2xl w-full outline-none">
