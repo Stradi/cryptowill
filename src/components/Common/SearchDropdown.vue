@@ -3,7 +3,7 @@
     <input ref="searchBox" v-model="term" @focus="isFocused=true" @input="typed" type="text" :placeholder="placeholder" :class="isSelected ? 'ring-2 ring-yellow-500' : ''" class="text-black p-2 rounded-xl outline-none">
     <div v-if="isFocused" class="p-2 bg-white text-black mt-2 rounded-xl absolute">
       <ul v-if="filteredItems.length !== 0" class="w-44">
-        <li v-for="item in filteredItems.slice(0,5)" :key="item" @click="selected(item)" class="cursor-pointer px-2 py-1 select-none rounded-xl transition duration-200 ease-out hover:bg-yellow-200">
+        <li v-for="item in filteredItems.slice(0,3)" :key="item" @click="selected(item)" class="cursor-pointer px-2 py-1 select-none rounded-xl transition duration-200 ease-out hover:bg-yellow-200">
           {{ item }}
         </li>
       </ul>
