@@ -1,12 +1,12 @@
 <template>
   <div
-    class="flex flex-col md:flex-row max-w-3xl mx-auto p-8 rounded-3xl"
+    class="flex flex-col md:flex-row max-w-2xl mx-auto p-8 rounded-3xl"
     v-bind:class="[
       animated !== undefined ? 'transition duration-300 ease-out transform hover:scale-105' : '',
       bgColor === 'dark' ? 'bg-gray-900' : bgColor === 'light' ? 'bg-gray-800' : ''
     ]"
   >
-    <div class="w-64 md:w-auto mx-auto pr-8">
+    <div class="md:w-auto mx-auto pr-8">
       <img :src="image" />
     </div>
     <div class="">

@@ -2,7 +2,7 @@
 <div>
   <Hero class="max-w-6xl mx-auto" :ctaUrl="ctaUrl"/>
   <div class="py-8 md:py-16 bg-gray-800">
-    <ImageTextCard image="/assets/grim-reaper.svg" title="What is CryptoWill?" animated bgColor="dark">
+    <ImageTextCard image="/assets/what_is_cryptowill.svg" title="What is CryptoWill?" animated bgColor="dark">
       &nbsp;&nbsp;&nbsp;&nbsp;CryptoWill will <span class="text-yellow-500">transfer your cryptocoins</span> to the people you've selected, <span class="text-yellow-500">after you die.</span>
       So your funds will not disappear forever in blockchain.<br>
       &nbsp;&nbsp;&nbsp;&nbsp;You can also set <span class="text-yellow-500">percentage</span> for each person and <span class="text-yellow-500">leave a note</span> to them.
