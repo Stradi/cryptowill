@@ -26,8 +26,8 @@ contract CryptoWill is Ownable {
         string message;
     }
     
-    uint256 ADD_PAYEE_COST = 0.1 ether;
-    uint256 TIME_AFTER_DEATH = 3 minutes;
+    uint256 ADD_PAYEE_COST = 0.035 ether;
+    uint256 TIME_AFTER_DEATH = 60 days;
     
     mapping(address => bool) public payerToRIP;
     mapping(address => Payee[]) public payerToPayee;
@@ -153,7 +153,7 @@ contract CryptoWill is Ownable {
         uint256 payeeId = payeeToPayerID[msg.sender][_payer];
         Payee storage payeeObject = payerToPayee[_payer][payeeId - 1];
         
-        require(payerToDeathTime[_payer] + TIME_AFTER_DEATH < block.timestamp, "need to wait 30 days");
+        require(payerToDeathTime[_payer] + TIME_AFTER_DEATH < block.timestamp, "need to wait 60 days");
         require(payerToRIP[_payer], "payer is alive");
         require(!payeeObject.isWithdrawed, "already withdrawed");
             
@@ -188,6 +188,7 @@ contract CryptoWill is Ownable {
         
         payerToRIP[msg.sender] = false;
         payerToConfirmationCount[msg.sender] = 0;
+        payerToDeathTime[msg.sender] = 0;
         
         for(uint256 i = 0; i < payerToApprovedCoins[msg.sender].length; i++) {
             address coinAddress = payerToApprovedCoins[msg.sender][i];
