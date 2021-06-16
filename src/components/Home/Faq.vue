@@ -38,7 +38,7 @@ export default {
         },
         {
           question: "Is CryptoWill free?",
-          answer: "&nbsp;&nbsp;&nbsp;&nbsp;CryptoWill is <span class='text-yellow-500'>not free.</span> Because of the <span class='text-yellow-500'>server and domain expenses.</span> Will creation costs about <span class='text-yellow-500'>0.05BNB.</span>"
+          answer: "&nbsp;&nbsp;&nbsp;&nbsp;CryptoWill is <span class='text-yellow-500'>not free.</span> Because of the <span class='text-yellow-500'>server and domain expenses.</span> Will creation costs about <span class='text-yellow-500'>0.035BNB.</span>"
         },
         {
           question: "What is some features of CryptoWill?",

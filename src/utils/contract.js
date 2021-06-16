@@ -163,7 +163,7 @@ const addPayee = (contractInstance, address, { payeeAddress, alias }) => {
   return new Promise(async (resolve, reject) => {
     await contractInstance.methods.addPayee(payeeAddress, alias).send({
       from: address,
-      value: web3js.utils.toWei("0.1", "ether")
+      value: web3js.utils.toWei("0.035", "ether")
     }).catch((error) => {
       reject(error);
       return;

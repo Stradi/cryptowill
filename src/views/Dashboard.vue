@@ -48,7 +48,7 @@ export default {
       return this.$store.state.web3.networkId;
     },
     isNetworkCorrect() {
-      return this.connectedNetworkId === 97;
+      return this.connectedNetworkId === 56;
     }
   }
 }

@@ -9,10 +9,7 @@
 <script>
 export default {
   name: "NavigationLink",
-  props: ["text", "url", "icon"],
-  mounted() {
-    console.log(this.$props.icon);
-  }
+  props: ["text", "url", "icon"]
 }
 </script>
 
